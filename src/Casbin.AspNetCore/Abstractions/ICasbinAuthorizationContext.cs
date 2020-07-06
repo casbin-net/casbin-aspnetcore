@@ -7,6 +7,5 @@ namespace Casbin.AspNetCore.Abstractions
     {
         public ClaimsPrincipal User { get; }
         public ICasbinAuthorizationData Data { get; }
-        public Type? RequestTransformerType { get; }
     }
 }

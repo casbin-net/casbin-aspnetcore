@@ -12,22 +12,27 @@ namespace Casbin.AspNetCore
 {
     public static class ServiceCollectionExtension
     {
-        public static IServiceCollection AddCasbinAuthorizationCore(this IServiceCollection services, Action<CasbinAuthorizationCoreOptions> configure)
+        public static IServiceCollection AddCasbinAuthorizationCore(
+            this IServiceCollection services,
+            Action<CasbinAuthorizationCoreOptions> configure,
+            ServiceLifetime defaultModelProviderLifeTime = ServiceLifetime.Scoped,
+            ServiceLifetime defaultEnforcerProviderLifeTime = ServiceLifetime.Scoped)
         {
-            var options = CasbinAuthorizationCoreOptions.GetDefault();
+            var options = new CasbinAuthorizationCoreOptions();
             configure(options);
             CheckOptions(options);
-            services.TryAdd(ServiceDescriptor.Describe(typeof(Model),
-                p => options.ModelFactory?.Invoke(),
-                options.ModelLifeTime));
-            services.TryAdd(ServiceDescriptor.Describe(typeof(Enforcer),
-                p =>
-                    options.EnforcerFactory?.Invoke(p.GetRequiredService<Model>()),
-                options.EnforcerLifeTime));
+            services.Configure(configure);
+            services.TryAdd(ServiceDescriptor.Describe(
+                typeof(ICasbinModelProvider), typeof(DefaultCasbinModelProvider),
+                defaultModelProviderLifeTime));
+            services.TryAdd(ServiceDescriptor.Describe(
+                typeof(IEnforcerProvider), typeof(DefaultEnforcerProvider),
+                defaultEnforcerProviderLifeTime));
             services.TryAddSingleton<
                 ICasbinAuthorizationContextFactory,
                 DefaultCasbinAuthorizationContextFactory>();
             services.TryAddScoped<IAuthorizationHandler, CasbinAuthorizationHandler>();
+            services.TryAddScoped<IEnforceService, DefaultEnforcerService>();
             services.AddSingleton<IRequestTransformer, BasicRequestTransformer>();
             services.AddAuthorizationCore();
             return services;
@@ -35,14 +40,9 @@ namespace Casbin.AspNetCore
 
         private static void CheckOptions(CasbinAuthorizationCoreOptions options)
         {
-            if (options.ModelFactory is null)
+            if (options.DefaultEnforcerFactory is null)
             {
-                throw new ArgumentNullException(nameof(options.ModelFactory));
-            }
-
-            if (options.EnforcerFactory is null)
-            {
-                throw new ArgumentNullException(nameof(options.EnforcerFactory));
+                throw new ArgumentNullException(nameof(options.DefaultEnforcerFactory));
             }
         }
     }

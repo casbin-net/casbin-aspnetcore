@@ -1,9 +1,13 @@
-﻿namespace Casbin.AspNetCore.Abstractions
+﻿using System;
+
+namespace Casbin.AspNetCore.Abstractions
 {
     public interface ICasbinAuthorizationData
     {
-        public string? ResourceName { get; set; }
-        public string? ActionName { get; set; }
+        public string? Resource { get; set; }
+        public string? Action { get; set; }
         public string? Issuer { get; set; }
+        public string? PreferSubClaimType { get; set; }
+        public Type? RequestTransformerType { get; set; }
     }
 }

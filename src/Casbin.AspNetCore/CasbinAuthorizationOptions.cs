@@ -1,5 +1,6 @@
 ﻿using System;
-using Microsoft.Extensions.DependencyInjection;
+using System.Security.Claims;
+using Casbin.AspNetCore.Abstractions;
 using NetCasbin;
 using NetCasbin.Model;
 
@@ -7,18 +8,9 @@ namespace Casbin.AspNetCore
 {
     public class CasbinAuthorizationCoreOptions
     {
-        public ServiceLifetime ModelLifeTime { get; set; }
-        public ServiceLifetime EnforcerLifeTime { get; set; }
-        public Func<Model>? ModelFactory { get; set; }
-        public Func<Model, Enforcer>? EnforcerFactory { get; set; }
-
-        public static CasbinAuthorizationCoreOptions GetDefault()
-        {
-            return new CasbinAuthorizationCoreOptions
-            {
-                ModelLifeTime = ServiceLifetime.Scoped,
-                EnforcerLifeTime = ServiceLifetime.Scoped,
-            };
-        }
+        public string PreferSubClaimType { get; set; } = ClaimTypes.NameIdentifier;
+        public IRequestTransformer? DefaultRequestTransformer { get; set; }
+        public Func<Model>? DefaultModelFactory { get; set; }
+        public Func<Model?, Enforcer>? DefaultEnforcerFactory { get; set; }
     }
 }

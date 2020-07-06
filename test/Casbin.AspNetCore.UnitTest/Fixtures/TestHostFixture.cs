@@ -16,8 +16,7 @@ namespace Casbin.AspNetCore.UnitTest.Fixtures
             {
                 services.AddCasbinAuthorizationCore(options =>
                 {
-                    options.ModelFactory = () => CoreEnforcer.NewModel();
-                    options.EnforcerFactory = model => new Enforcer(TestUtility.GetExampleFile("basic_model.conf"), TestUtility.GetExampleFile("basic_policy.csv"));
+                    options.DefaultEnforcerFactory = model => new Enforcer(TestUtility.GetExampleFile("basic_model.conf"), TestUtility.GetExampleFile("basic_policy.csv"));
                 });
                 // The option is not necessary now.
                 //services.AddAuthorizationCore(options =>
@@ -35,6 +34,6 @@ namespace Casbin.AspNetCore.UnitTest.Fixtures
             TestServer = new TestServer(webHostBuilder);
         }
 
-        public TestServer TestServer { get; set; }
+        public TestServer TestServer { get; private set; }
     }
 }
