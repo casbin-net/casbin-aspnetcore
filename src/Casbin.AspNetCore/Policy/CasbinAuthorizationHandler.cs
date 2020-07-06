@@ -12,42 +12,17 @@ namespace Casbin.AspNetCore.Policy
 {
     public class CasbinAuthorizationHandler : AuthorizationHandler<CasbinAuthorizationRequirement, ICasbinAuthorizationContext>
     {
-        private readonly Enforcer _enforcer;
-        private readonly IEnumerable<IRequestTransformer> _transformers;
+        private readonly IEnforceService _enforcerService;
 
-        public CasbinAuthorizationHandler(Enforcer enforcer, IEnumerable<IRequestTransformer> transformers)
+        public CasbinAuthorizationHandler(IEnforceService enforcerService)
         {
-            _enforcer = enforcer ?? throw new ArgumentNullException(nameof(enforcer));
-            _transformers = transformers ?? throw new ArgumentNullException(nameof(transformers));
+            _enforcerService = enforcerService ?? throw new ArgumentNullException(nameof(enforcerService));
         }
 
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, CasbinAuthorizationRequirement requirement,
+        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, CasbinAuthorizationRequirement requirement,
             ICasbinAuthorizationContext casbinContext)
         {
-            bool noDefault = requirement.DefaultRequestTransformer is null;
-            var transformersArray = _transformers.ToArray();
-            if (transformersArray.Length == 0 && noDefault)
-            {
-                throw new ArgumentException("Can find any request transformer.");
-            }
-
-            IRequestTransformer? transformer = null;
-            if (!(casbinContext.RequestTransformerType is null))
-            {
-                transformer = _transformers.FirstOrDefault( t => t.GetType() == casbinContext.RequestTransformerType);
-            }
-            else if (!noDefault)
-            {
-                transformer = requirement.DefaultRequestTransformer;
-            }
-
-            transformer ??= _transformers.FirstOrDefault();
-
-            string? sub = transformer.SubTransformer(casbinContext);
-            object? obj = transformer.ObjTransformer(casbinContext);
-            string? act = transformer.ActTransformer(casbinContext);
-
-            if (_enforcer.Enforce(sub, obj, act))
+            if (await _enforcerService.EnforceAsync(casbinContext))
             {
                 context.Succeed(requirement);
             }
@@ -55,8 +30,6 @@ namespace Casbin.AspNetCore.Policy
             {
                 context.Fail();
             }
-
-            return Task.CompletedTask;
         }
     }
 }

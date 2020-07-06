@@ -5,9 +5,10 @@ namespace Casbin.AspNetCore.Abstractions
 {
     public interface IRequestTransformer
     {
-        public Func<ICasbinAuthorizationContext, string> SubTransformer { get; set; }
-        public Func<ICasbinAuthorizationContext, object> ObjTransformer { get; set; }
-        public Func<ICasbinAuthorizationContext, string> ActTransformer { get; set; }
-        public string? Issuer { get; }
+        public string? Issuer { get; set; }
+        public string? PreferSubClaimType { get; set; }
+        public string SubTransform(ICasbinAuthorizationContext context);
+        public object ObjTransform(ICasbinAuthorizationContext context);
+        public string ActTransform(ICasbinAuthorizationContext context);
     }
 }

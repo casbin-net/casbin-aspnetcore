@@ -1,7 +1,4 @@
-﻿
-
-using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Security.Claims;
 using Casbin.AspNetCore.Abstractions;
 
@@ -9,31 +6,27 @@ namespace Casbin.AspNetCore.Transformers
 {
     public class BasicRequestTransformer : IRequestTransformer
     {
-        public BasicRequestTransformer()
-        {
-            SubTransformer = context => context.User.FindFirst(ClaimTypes.Name).Value;
-            ObjTransformer = context => context.Data.ResourceName ?? string.Empty;
-            ActTransformer = context => context.Data.ActionName ?? string.Empty;
-        }
+        public string? Issuer { get; set; }
+        public string? PreferSubClaimType { get; set; } = ClaimTypes.NameIdentifier;
 
-        public BasicRequestTransformer(string? issuer) : this()
+        public virtual string SubTransform(ICasbinAuthorizationContext context)
         {
-            if (issuer is null)
+            Claim? claim;
+            if (Issuer is null)
             {
-                return;
+                claim = context.User.FindFirst(PreferSubClaimType);
+                return claim is null ? string.Empty : claim.Value;
             }
 
-            Issuer = issuer;
-            SubTransformer = context =>
-            {
-                return context.User.FindAll(ClaimTypes.Name).FirstOrDefault(
-                    c => string.Equals(c.Issuer, Issuer)).Value;
-            };
+            claim = context.User.FindAll(PreferSubClaimType).FirstOrDefault(
+                c => string.Equals(c.Issuer, Issuer));
+            return claim is null ? string.Empty : claim.Value;
         }
 
-        public string? Issuer { get; }
-        public Func<ICasbinAuthorizationContext, string> SubTransformer { get; set; }
-        public Func<ICasbinAuthorizationContext, object> ObjTransformer { get; set; }
-        public Func<ICasbinAuthorizationContext, string> ActTransformer { get; set; }
+        public virtual string ActTransform(ICasbinAuthorizationContext context)
+            => context.Data.Action ?? string.Empty;
+
+        public virtual object ObjTransform(ICasbinAuthorizationContext context)
+            => context.Data.Resource ?? string.Empty;
     }
 }

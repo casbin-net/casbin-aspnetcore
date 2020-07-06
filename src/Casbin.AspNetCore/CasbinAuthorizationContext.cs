@@ -12,14 +12,7 @@ namespace Casbin.AspNetCore
             Data = data;
         }
 
-        public CasbinAuthorizationContext(ClaimsPrincipal user, ICasbinAuthorizationData data,
-            Type requestTransformerType) : this(user, data)
-        {
-            RequestTransformerType = requestTransformerType;
-        }
-
         public ClaimsPrincipal User { get; }
         public ICasbinAuthorizationData Data { get; }
-        public Type? RequestTransformerType { get; }
     }
 }
