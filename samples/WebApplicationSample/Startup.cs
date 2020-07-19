@@ -34,6 +34,7 @@ namespace WebApplicationSample
 
             //Add Casbin Authorization
             //services.AddCasbinAuthorizationCore();
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
