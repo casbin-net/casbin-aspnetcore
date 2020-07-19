@@ -11,6 +11,9 @@
 *.sln.docstates
 *.sln.DotSettings
 
+# Project-specific files
+/src/Casbin.AspNetCore.Policy/Properties
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 

@@ -33,7 +33,7 @@ namespace WebApplicationSample
             services.AddRazorPages();
 
             //Add Casbin Authorization
-            services.AddCasbinAuthorization();
+            //services.AddCasbinAuthorizationCore();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
