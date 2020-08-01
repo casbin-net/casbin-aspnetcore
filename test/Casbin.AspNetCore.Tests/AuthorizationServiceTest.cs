@@ -1,14 +1,15 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
-using Casbin.AspNetCore.Abstractions;
-using Casbin.AspNetCore.Policy;
-using Casbin.AspNetCore.UnitTest.Fixtures;
-using Casbin.AspNetCore.UnitTest.Utilities;
+using Casbin.AspNetCore.Core;
+using Casbin.AspNetCore.Core.Abstractions;
+using Casbin.AspNetCore.Core.Policy;
+using Casbin.AspNetCore.Tests.Fixtures;
+using Casbin.AspNetCore.Tests.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace Casbin.AspNetCore.UnitTest
+namespace Casbin.AspNetCore.Tests
 {
     public class AuthorizationServiceTest : IClassFixture<TestServerFixture>
     {

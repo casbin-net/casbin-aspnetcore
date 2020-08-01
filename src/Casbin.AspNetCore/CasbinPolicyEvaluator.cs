@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Policy;
 
-namespace Casbin.AspNetCore.Policy
+namespace Casbin.AspNetCore
 {
     public class CasbinPolicyEvaluator : PolicyEvaluator
     {

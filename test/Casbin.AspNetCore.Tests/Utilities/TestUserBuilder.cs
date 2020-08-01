@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
 
-namespace Casbin.AspNetCore.UnitTest.Utilities
+namespace Casbin.AspNetCore.Tests.Utilities
 {
     public class TestUserBuilder
     {

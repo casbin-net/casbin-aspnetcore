@@ -1,9 +1,9 @@
 ﻿using System;
-using Casbin.AspNetCore.Abstractions;
+using Casbin.AspNetCore.Core.Abstractions;
 using Microsoft.Extensions.Options;
 using NetCasbin.Model;
 
-namespace Casbin.AspNetCore
+namespace Casbin.AspNetCore.Core
 {
     public class DefaultCasbinModelProvider : ICasbinModelProvider
     {

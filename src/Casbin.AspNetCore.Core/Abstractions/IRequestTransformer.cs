@@ -1,7 +1,4 @@
-﻿using System;
-using System.Security.Claims;
-
-namespace Casbin.AspNetCore.Abstractions
+﻿namespace Casbin.AspNetCore.Core.Abstractions
 {
     public interface IRequestTransformer
     {

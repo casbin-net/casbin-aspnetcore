@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Security.Claims;
-using Casbin.AspNetCore.Abstractions;
+using Casbin.AspNetCore.Core.Abstractions;
 using NetCasbin;
 using NetCasbin.Model;
 
-namespace Casbin.AspNetCore
+namespace Casbin.AspNetCore.Core
 {
     public class CasbinAuthorizationCoreOptions
     {

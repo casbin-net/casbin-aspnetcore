@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Casbin.AspNetCore.Abstractions;
-using Casbin.AspNetCore.Extensions;
+using Casbin.AspNetCore.Core.Abstractions;
+using Casbin.AspNetCore.Core.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Casbin.AspNetCore
+namespace Casbin.AspNetCore.Core
 {
     public class DefaultEnforcerService : IEnforceService
     {

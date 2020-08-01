@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading;
 using System.Threading.Tasks;
-using Casbin.AspNetCore.Abstractions;
+using Casbin.AspNetCore.Core.Abstractions;
 using Microsoft.AspNetCore.Authorization;
-using NetCasbin;
 
-namespace Casbin.AspNetCore.Policy
+namespace Casbin.AspNetCore.Core.Policy
 {
     public class CasbinAuthorizationHandler : AuthorizationHandler<CasbinAuthorizationRequirement, ICasbinAuthorizationContext>
     {

@@ -1,9 +1,9 @@
 ﻿using System;
-using Casbin.AspNetCore.Abstractions;
+using Casbin.AspNetCore.Core.Abstractions;
 using Microsoft.Extensions.Options;
 using NetCasbin;
 
-namespace Casbin.AspNetCore
+namespace Casbin.AspNetCore.Core
 {
     public class DefaultEnforcerProvider : IEnforcerProvider
     {

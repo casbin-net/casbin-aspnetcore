@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Casbin.AspNetCore.UnitTest.Utilities
+namespace Casbin.AspNetCore.Tests.Utilities
 {
     public static class TestUtility
     {

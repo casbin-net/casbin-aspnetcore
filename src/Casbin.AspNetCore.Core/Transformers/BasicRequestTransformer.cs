@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Security.Claims;
-using Casbin.AspNetCore.Abstractions;
+using Casbin.AspNetCore.Core.Abstractions;
 
-namespace Casbin.AspNetCore.Transformers
+namespace Casbin.AspNetCore.Core.Transformers
 {
     public class BasicRequestTransformer : IRequestTransformer
     {

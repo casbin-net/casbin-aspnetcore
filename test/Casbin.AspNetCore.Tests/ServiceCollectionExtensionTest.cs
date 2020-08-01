@@ -1,9 +1,10 @@
 ﻿using System;
+using Casbin.AspNetCore.Core;
 using Microsoft.Extensions.DependencyInjection;
 using NetCasbin;
 using Xunit;
 
-namespace Casbin.AspNetCore.UnitTest
+namespace Casbin.AspNetCore.Tests
 {
     public class ServiceCollectionExtensionTest
     {

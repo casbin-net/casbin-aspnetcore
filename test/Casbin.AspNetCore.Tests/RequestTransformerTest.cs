@@ -1,14 +1,10 @@
 ﻿using System.Security.Claims;
-using Casbin.AspNetCore.Abstractions;
-using Casbin.AspNetCore.Transformers;
-using Casbin.AspNetCore.UnitTest.Fixtures;
-using Casbin.AspNetCore.UnitTest.Utilities;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+using Casbin.AspNetCore.Core;
+using Casbin.AspNetCore.Core.Transformers;
+using Casbin.AspNetCore.Tests.Utilities;
 using Xunit;
 
-namespace Casbin.AspNetCore.UnitTest
+namespace Casbin.AspNetCore.Tests
 {
     public class RequestTransformerTest
     {

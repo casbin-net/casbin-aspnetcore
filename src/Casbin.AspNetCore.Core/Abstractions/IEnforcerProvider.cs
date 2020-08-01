@@ -1,6 +1,6 @@
 ﻿using NetCasbin;
 
-namespace Casbin.AspNetCore.Abstractions
+namespace Casbin.AspNetCore.Core.Abstractions
 {
     public interface IEnforcerProvider
     {

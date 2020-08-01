@@ -1,9 +1,10 @@
-﻿using Casbin.AspNetCore.UnitTest.Utilities;
+﻿using Casbin.AspNetCore.Core;
+using Casbin.AspNetCore.Tests.Utilities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using NetCasbin;
 
-namespace Casbin.AspNetCore.UnitTest.Fixtures
+namespace Casbin.AspNetCore.Tests.Fixtures
 {
     public class TestServerFixture
     {

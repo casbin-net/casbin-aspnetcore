@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace Casbin.AspNetCore.Extensions
+namespace Casbin.AspNetCore.Core.Extensions
 {
     internal static class LoggerExtension
     {
