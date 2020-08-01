@@ -2,11 +2,20 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <PackageTags>aspnetcore;authorization</PackageTags>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Nullable>enable</Nullable>
     <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>Casbin.NET</Authors>
+    <RepositoryUrl>https://github.com/casbin-net/Casbin.AspNetCore</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <Company>Casbin.NET</Company>
+    <Copyright>Apache License 2.0</Copyright>
+    <IsPackable>true</IsPackable>
+    <PackageTags>aspnetcore;authorization;security</PackageTags>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
 </Project>
