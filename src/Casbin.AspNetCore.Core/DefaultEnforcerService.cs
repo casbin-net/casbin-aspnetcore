@@ -12,18 +12,18 @@ namespace Casbin.AspNetCore.Core
     public class DefaultEnforcerService : IEnforceService
     {
         private readonly IOptions<CasbinAuthorizationCoreOptions> _options;
-        private readonly IEnumerable<IRequestTransformer> _transformers;
+        private readonly IRequestTransformersCache _transformersCache;
         private readonly IEnforcerProvider _enforcerProvider;
         private readonly ILogger<DefaultEnforcerService> _logger;
 
         public DefaultEnforcerService(
             IOptions<CasbinAuthorizationCoreOptions> options,
-            IEnumerable<IRequestTransformer> transformers,
+            IRequestTransformersCache transformersCache,
             IEnforcerProvider enforcerProvider,
             ILogger<DefaultEnforcerService> logger)
         {
             _options = options ?? throw new ArgumentNullException(nameof(CasbinAuthorizationCoreOptions));
-            _transformers = transformers ?? throw new ArgumentNullException(nameof(transformers));
+            _transformersCache = transformersCache ?? throw new ArgumentNullException(nameof(transformersCache));
             _enforcerProvider = enforcerProvider ?? throw new ArgumentNullException(nameof(enforcerProvider));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -36,9 +36,12 @@ namespace Casbin.AspNetCore.Core
                 throw new ArgumentException("Can not find any enforcer.");
             }
 
+            var transformersArray =
+                _transformersCache.Transformers as IRequestTransformer[] ??
+                _transformersCache.Transformers?.ToArray();
+
             bool noDefault = _options.Value.DefaultRequestTransformer is null;
-            var transformersArray = _transformers.ToArray();
-            if (transformersArray.Length == 0 && noDefault)
+            if (transformersArray is null || transformersArray.Length == 0 && noDefault)
             {
                 throw new ArgumentException("Can find any request transformer.");
             }
@@ -50,13 +53,13 @@ namespace Casbin.AspNetCore.Core
             IRequestTransformer? transformer = null;
             if (!(context.Data.RequestTransformerType is null))
             {
-                transformer = _transformers.FirstOrDefault( t => t.GetType() == context.Data.RequestTransformerType);
+                transformer = transformersArray.FirstOrDefault( t => t.GetType() == context.Data.RequestTransformerType);
             }
             else if (!noDefault)
             {
                 transformer = _options.Value.DefaultRequestTransformer;
             }
-            transformer ??= _transformers.FirstOrDefault();
+            transformer ??= transformersArray.FirstOrDefault();
 
             // The order of deciding transformer.PreferSubClaimType is :
             // 1. context.Data.PreferSubClaimType >

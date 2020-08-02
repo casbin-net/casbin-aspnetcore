@@ -32,6 +32,7 @@ namespace Casbin.AspNetCore.Core
             services.TryAddScoped<IAuthorizationHandler, CasbinAuthorizationHandler>();
             services.TryAddScoped<IEnforceService, DefaultEnforcerService>();
             services.AddSingleton<IRequestTransformer, BasicRequestTransformer>();
+            services.AddSingleton<IRequestTransformersCache, RequestTransformersCache>();
             services.AddAuthorizationCore();
             return services;
         }
