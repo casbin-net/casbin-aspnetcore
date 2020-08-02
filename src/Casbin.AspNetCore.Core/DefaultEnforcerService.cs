@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Casbin.AspNetCore.Abstractions;
@@ -71,11 +70,9 @@ namespace Casbin.AspNetCore.Core
             // 2. null (if this issuer is null, it will be ignored)
             transformer.Issuer = context.Data.Issuer;
 
-            string sub = transformer.SubTransform(context);
-            object obj = transformer.ObjTransform(context);
-            string act = transformer.ActTransform(context);
+            var requestValues = transformer.Transform(context);
 
-            if (enforcer.Enforce(sub, obj, act))
+            if (enforcer.Enforce(requestValues as object[] ?? requestValues.ToArray()))
             {
                 _logger.CasbinAuthorizationSucceeded();
                 return Task.FromResult(true);

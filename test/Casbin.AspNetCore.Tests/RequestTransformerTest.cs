@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Linq;
+using System.Security.Claims;
 using Casbin.AspNetCore.Core;
 using Casbin.AspNetCore.Core.Transformers;
 using Casbin.AspNetCore.Tests.Utilities;
@@ -24,14 +25,12 @@ namespace Casbin.AspNetCore.Tests
                 });
 
             // Act
-            string sub = transformer.SubTransform(casbinContext);
-            object obj = transformer.ObjTransform(casbinContext);
-            string act = transformer.ActTransform(casbinContext);
+            var requestValues = transformer.Transform(casbinContext).ToArray();
 
             // Assert
-            Assert.Equal("alice", sub);
-            Assert.Equal("data1", obj);
-            Assert.Equal("write", act);
+            Assert.Equal("alice", requestValues[0]);
+            Assert.Equal("data1", requestValues[1]);
+            Assert.Equal("write", requestValues[2]);
 
             // Failed
             user = new TestUserBuilder()
@@ -44,14 +43,12 @@ namespace Casbin.AspNetCore.Tests
                 });
 
             // Act
-            sub = transformer.SubTransform(casbinContext);
-            obj = transformer.ObjTransform(casbinContext);
-            act = transformer.ActTransform(casbinContext);
+            requestValues = transformer.Transform(casbinContext).ToArray();
 
             // Assert
-            Assert.NotEqual("alice", sub);
-            Assert.Equal("data1", obj);
-            Assert.Equal("write", act);
+            Assert.NotEqual("alice", requestValues[0]);
+            Assert.Equal("data1", requestValues[1]);
+            Assert.Equal("write", requestValues[2]);
         }
 
         [Fact]
@@ -74,14 +71,12 @@ namespace Casbin.AspNetCore.Tests
                 });
 
             // Act
-            string sub = transformer.SubTransform(casbinContext);
-            object obj = transformer.ObjTransform(casbinContext);
-            string act = transformer.ActTransform(casbinContext);
+            var requestValues = transformer.Transform(casbinContext).ToArray();
 
             // Assert
-            Assert.Equal("alice", sub);
-            Assert.Equal("data1", obj);
-            Assert.Equal("write", act);
+            Assert.Equal("alice", requestValues[0]);
+            Assert.Equal("data1", requestValues[1]);
+            Assert.Equal("write", requestValues[2]);
 
             // Failed
             user = new TestUserBuilder()
@@ -94,14 +89,12 @@ namespace Casbin.AspNetCore.Tests
                 });
 
             // Act
-            sub = transformer.SubTransform(casbinContext);
-            obj = transformer.ObjTransform(casbinContext);
-            act = transformer.ActTransform(casbinContext);
+            requestValues = transformer.Transform(casbinContext).ToArray();
 
             // Assert
-            Assert.NotEqual("alice", sub);
-            Assert.Equal("data1", obj);
-            Assert.Equal("write", act);
+            Assert.NotEqual("alice", requestValues[0]);
+            Assert.Equal("data1", requestValues[1]);
+            Assert.Equal("write", requestValues[2]);
         }
 
         [Fact]
@@ -125,14 +118,12 @@ namespace Casbin.AspNetCore.Tests
                 });
 
             // Act
-            string sub = transformer.SubTransform(casbinContext);
-            object obj = transformer.ObjTransform(casbinContext);
-            string act = transformer.ActTransform(casbinContext);
+            var requestValues = transformer.Transform(casbinContext).ToArray();
 
             // Assert
-            Assert.Equal("alice", sub);
-            Assert.Equal("data1", obj);
-            Assert.Equal("write", act);
+            Assert.Equal("alice", requestValues[0]);
+            Assert.Equal("data1", requestValues[1]);
+            Assert.Equal("write", requestValues[2]);
 
             // Failed
             user = new TestUserBuilder()
@@ -145,14 +136,12 @@ namespace Casbin.AspNetCore.Tests
                 });
 
             // Act
-            sub = transformer.SubTransform(casbinContext);
-            obj = transformer.ObjTransform(casbinContext);
-            act = transformer.ActTransform(casbinContext);
+            requestValues = transformer.Transform(casbinContext).ToArray();
 
             // Assert
-            Assert.NotEqual("alice", sub);
-            Assert.Equal("data1", obj);
-            Assert.Equal("write", act);
+            Assert.NotEqual("alice", requestValues[0]);
+            Assert.Equal("data1", requestValues[1]);
+            Assert.Equal("write", requestValues[2]);
         }
     }
 }

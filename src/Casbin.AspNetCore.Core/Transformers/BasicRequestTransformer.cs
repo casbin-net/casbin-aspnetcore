@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using Casbin.AspNetCore.Abstractions;
 
@@ -8,6 +9,15 @@ namespace Casbin.AspNetCore.Core.Transformers
     {
         public string? Issuer { get; set; }
         public string? PreferSubClaimType { get; set; } = ClaimTypes.NameIdentifier;
+
+        public virtual IEnumerable<object> Transform(ICasbinAuthorizationContext context)
+        {
+            var requestValues = new object[3];
+            requestValues[0] = SubTransform(context);
+            requestValues[1] = ObjTransform(context);
+            requestValues[2] = ActTransform(context);
+            return requestValues;
+        }
 
         public virtual string SubTransform(ICasbinAuthorizationContext context)
         {
@@ -23,10 +33,10 @@ namespace Casbin.AspNetCore.Core.Transformers
             return claim is null ? string.Empty : claim.Value;
         }
 
+        public virtual string ObjTransform(ICasbinAuthorizationContext context)
+            => context.Data.Resource ?? string.Empty;
+
         public virtual string ActTransform(ICasbinAuthorizationContext context)
             => context.Data.Action ?? string.Empty;
-
-        public virtual object ObjTransform(ICasbinAuthorizationContext context)
-            => context.Data.Resource ?? string.Empty;
     }
 }
