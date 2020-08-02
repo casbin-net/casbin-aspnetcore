@@ -71,7 +71,7 @@ jobs:
   release-build-version:
     runs-on: windows-latest
     needs: build
-    if: github.repository_owner == 'casbin-net' || github.ref == 'refs/heads/master' || github.event_name == 'release'
+    if: github.repository_owner == 'casbin-net' && github.ref == 'refs/heads/master'
     steps:
       - name: Download Artefact
         uses: actions/download-artifact@v1
