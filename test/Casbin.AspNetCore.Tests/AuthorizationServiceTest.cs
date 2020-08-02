@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
+using Casbin.AspNetCore.Abstractions;
 using Casbin.AspNetCore.Core;
-using Casbin.AspNetCore.Core.Abstractions;
 using Casbin.AspNetCore.Core.Policy;
 using Casbin.AspNetCore.Tests.Fixtures;
 using Casbin.AspNetCore.Tests.Utilities;

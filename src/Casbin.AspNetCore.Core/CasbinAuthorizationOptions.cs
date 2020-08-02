@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Security.Claims;
-using Casbin.AspNetCore.Core.Abstractions;
+using Casbin.AspNetCore.Abstractions;
 using NetCasbin;
 using NetCasbin.Model;
 

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Casbin.AspNetCore.Core.Abstractions
+namespace Casbin.AspNetCore.Abstractions
 {
     public interface IEnforceService
     {

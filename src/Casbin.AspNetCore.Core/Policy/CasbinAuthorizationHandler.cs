@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Casbin.AspNetCore.Core.Abstractions;
+using Casbin.AspNetCore.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Casbin.AspNetCore.Core.Policy

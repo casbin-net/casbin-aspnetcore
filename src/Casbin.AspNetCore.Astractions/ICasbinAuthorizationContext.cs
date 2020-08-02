@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace Casbin.AspNetCore.Core.Abstractions
+namespace Casbin.AspNetCore.Abstractions
 {
     public interface ICasbinAuthorizationContext
     {

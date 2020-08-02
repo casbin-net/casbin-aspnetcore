@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Casbin.AspNetCore.Core.Abstractions;
+using Casbin.AspNetCore.Abstractions;
 using Casbin.AspNetCore.Core.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

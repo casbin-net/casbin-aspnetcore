@@ -31,6 +31,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Casbin.AspNetCore.Tests", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Casbin.AspNetCore.Performance", "test\Casbin.AspNetCore.Performance\Casbin.AspNetCore.Performance.csproj", "{82166036-4E1D-44EA-B6C2-190C5BD4EBFB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Casbin.AspNetCore.Abstractions", "src\Casbin.AspNetCore.Astractions\Casbin.AspNetCore.Abstractions.csproj", "{C6A00589-D105-452E-ADAC-16F19B2B3B2D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{82166036-4E1D-44EA-B6C2-190C5BD4EBFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{82166036-4E1D-44EA-B6C2-190C5BD4EBFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{82166036-4E1D-44EA-B6C2-190C5BD4EBFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6A00589-D105-452E-ADAC-16F19B2B3B2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6A00589-D105-452E-ADAC-16F19B2B3B2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6A00589-D105-452E-ADAC-16F19B2B3B2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6A00589-D105-452E-ADAC-16F19B2B3B2D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -72,6 +78,7 @@ Global
 		{2C7476E4-8C0F-4ED5-8B24-EA148AAFC284} = {B3DE00B2-3985-40B5-AFCF-4466733B9A35}
 		{D28D5C8B-87BC-4BB4-8EE3-4266195F02B3} = {E8E8CE11-04F7-4F61-B5CF-F58852E8052B}
 		{82166036-4E1D-44EA-B6C2-190C5BD4EBFB} = {E8E8CE11-04F7-4F61-B5CF-F58852E8052B}
+		{C6A00589-D105-452E-ADAC-16F19B2B3B2D} = {B3DE00B2-3985-40B5-AFCF-4466733B9A35}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2A11ADB2-E18C-492D-B72E-F718510D5E6F}

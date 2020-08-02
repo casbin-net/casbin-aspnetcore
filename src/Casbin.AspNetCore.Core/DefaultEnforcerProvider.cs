@@ -1,5 +1,5 @@
 ﻿using System;
-using Casbin.AspNetCore.Core.Abstractions;
+using Casbin.AspNetCore.Abstractions;
 using Microsoft.Extensions.Options;
 using NetCasbin;
 

@@ -1,6 +1,7 @@
 ﻿using NetCasbin.Model;
 
-namespace Casbin.AspNetCore.Core.Abstractions
+// ReSharper disable once CheckNamespace
+namespace Casbin.AspNetCore.Abstractions
 {
     public interface ICasbinModelProvider
     {
