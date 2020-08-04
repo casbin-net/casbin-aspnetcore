@@ -88,10 +88,4 @@ jobs:
         run: dotnet nuget add source https://nuget.pkg.github.com/casbin-net/index.json --name github.com --username casbin-net --password $env:GITHUB_TOKEN
 
       - name: Push github package
-        run: |
-          $count = 0;
-          do {
-              ++$count;
-              dotnet nuget push .\drop-ci-packages\*.nupkg -s github.com --skip-duplicate;
-          }
-          while ($count -lt 30 -and $LastExitCode -ne 0)
+        run: dotnet nuget push .\drop-ci-packages\*.nupkg -s github.com --skip-duplicate
