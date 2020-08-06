@@ -1,12 +1,12 @@
 ﻿using System;
 using Casbin.AspNetCore.Abstractions;
-using Casbin.AspNetCore.Core.Policy;
-using Casbin.AspNetCore.Core.Transformers;
+using Casbin.AspNetCore.Authorization.Policy;
+using Casbin.AspNetCore.Authorization.Transformers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace Casbin.AspNetCore.Core
+namespace Casbin.AspNetCore.Authorization
 {
     public static class ServiceCollectionExtension
     {

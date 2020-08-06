@@ -1,4 +1,4 @@
-﻿using Casbin.AspNetCore.Core;
+﻿using Casbin.AspNetCore.Authorization;
 using Casbin.AspNetCore.Tests.Utilities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;

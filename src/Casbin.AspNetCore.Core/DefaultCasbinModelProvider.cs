@@ -3,7 +3,7 @@ using Casbin.AspNetCore.Abstractions;
 using Microsoft.Extensions.Options;
 using NetCasbin.Model;
 
-namespace Casbin.AspNetCore.Core
+namespace Casbin.AspNetCore.Authorization
 {
     public class DefaultCasbinModelProvider : ICasbinModelProvider
     {

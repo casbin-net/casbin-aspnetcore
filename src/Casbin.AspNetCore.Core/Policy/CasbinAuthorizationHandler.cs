@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Casbin.AspNetCore.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Casbin.AspNetCore.Core.Policy
+namespace Casbin.AspNetCore.Authorization.Policy
 {
     public class CasbinAuthorizationHandler : AuthorizationHandler<CasbinAuthorizationRequirement, ICasbinAuthorizationContext>
     {

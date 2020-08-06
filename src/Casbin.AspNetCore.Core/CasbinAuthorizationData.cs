@@ -1,7 +1,7 @@
 ﻿using System;
 using Casbin.AspNetCore.Abstractions;
 
-namespace Casbin.AspNetCore.Core
+namespace Casbin.AspNetCore.Authorization
 {
     public class CasbinAuthorizationData : ICasbinAuthorizationData
     {

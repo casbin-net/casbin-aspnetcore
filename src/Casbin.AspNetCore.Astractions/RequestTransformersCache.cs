@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Casbin.AspNetCore.Abstractions
+namespace Casbin.AspNetCore.Authorization
 {
     public interface IRequestTransformersCache
     {

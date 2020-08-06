@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Security.Claims;
-using Casbin.AspNetCore.Core;
-using Casbin.AspNetCore.Core.Transformers;
+using Casbin.AspNetCore.Authorization;
+using Casbin.AspNetCore.Authorization.Transformers;
 using Casbin.AspNetCore.Tests.Utilities;
 using Xunit;
 

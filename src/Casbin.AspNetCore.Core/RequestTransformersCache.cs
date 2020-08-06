@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Casbin.AspNetCore.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Casbin.AspNetCore.Core
+namespace Casbin.AspNetCore.Authorization
 {
     public class RequestTransformersCache : IRequestTransformersCache
     {

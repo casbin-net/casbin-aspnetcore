@@ -2,11 +2,11 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Casbin.AspNetCore.Abstractions;
-using Casbin.AspNetCore.Core.Extensions;
+using Casbin.AspNetCore.Authorization.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Casbin.AspNetCore.Core
+namespace Casbin.AspNetCore.Authorization
 {
     public class DefaultEnforcerService : IEnforceService
     {

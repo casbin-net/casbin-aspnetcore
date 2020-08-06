@@ -1,5 +1,5 @@
 ﻿using System;
-using Casbin.AspNetCore.Core;
+using Casbin.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using NetCasbin;
 using Xunit;

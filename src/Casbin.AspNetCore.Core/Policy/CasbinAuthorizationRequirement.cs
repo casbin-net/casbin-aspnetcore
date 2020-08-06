@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace Casbin.AspNetCore.Core.Policy
+namespace Casbin.AspNetCore.Authorization.Policy
 {
     public class CasbinAuthorizationRequirement : IAuthorizationRequirement
     {
