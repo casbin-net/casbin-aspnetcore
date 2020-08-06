@@ -10,6 +10,7 @@
 *.userosscache
 *.sln.docstates
 *.sln.DotSettings
+*.csproj.DotSettings
 
 # Project-specific files
 /src/Casbin.AspNetCore.Policy/Properties
