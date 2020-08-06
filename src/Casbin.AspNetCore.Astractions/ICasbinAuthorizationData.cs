@@ -9,5 +9,6 @@ namespace Casbin.AspNetCore.Abstractions
         public string? Issuer { get; set; }
         public string? PreferSubClaimType { get; set; }
         public Type? RequestTransformerType { get; set; }
+        public string? AuthenticationSchemes { get; set; }
     }
 }
