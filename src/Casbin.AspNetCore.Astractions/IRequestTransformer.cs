@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Casbin.AspNetCore.Authorization
 {
@@ -6,6 +7,6 @@ namespace Casbin.AspNetCore.Authorization
     {
         public string? Issuer { get; set; }
         public string? PreferSubClaimType { get; set; }
-        public IEnumerable<object> Transform(ICasbinAuthorizationContext context);
+        public ValueTask<IEnumerable<object>> TransformAsync(ICasbinAuthorizationContext context, ICasbinAuthorizationData data);
     }
 }

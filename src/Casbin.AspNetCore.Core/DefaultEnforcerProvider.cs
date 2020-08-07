@@ -20,7 +20,7 @@ namespace Casbin.AspNetCore.Authorization
 
         public virtual Enforcer? GetEnforcer()
         {
-            _enforcer ??= _options.Value.DefaultEnforcerFactory?.Invoke(_casbinModelProvider.GetModel());;
+            _enforcer ??= _options.Value.DefaultEnforcerFactory?.Invoke(_casbinModelProvider.GetModel());
             return _enforcer;
         }
     }

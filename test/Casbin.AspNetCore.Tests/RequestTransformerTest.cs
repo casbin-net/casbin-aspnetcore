@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using Casbin.AspNetCore.Authorization;
 using Casbin.AspNetCore.Authorization.Transformers;
 using Casbin.AspNetCore.Tests.Utilities;
@@ -10,7 +11,7 @@ namespace Casbin.AspNetCore.Tests
     public class RequestTransformerTest
     {
         [Fact]
-        public void ShouldBasicTransform()
+        public async Task ShouldBasicTransform()
         {
             var transformer = new BasicRequestTransformer();
 
@@ -25,7 +26,7 @@ namespace Casbin.AspNetCore.Tests
                 });
 
             // Act
-            var requestValues = transformer.Transform(casbinContext).ToArray();
+            var requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
 
             // Assert
             Assert.Equal("alice", requestValues[0]);
@@ -43,7 +44,7 @@ namespace Casbin.AspNetCore.Tests
                 });
 
             // Act
-            requestValues = transformer.Transform(casbinContext).ToArray();
+            requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
 
             // Assert
             Assert.NotEqual("alice", requestValues[0]);
@@ -52,7 +53,7 @@ namespace Casbin.AspNetCore.Tests
         }
 
         [Fact]
-        public void ShouldBasicTransformWhenSpecSubClaimType()
+        public async Task ShouldBasicTransformWhenSpecSubClaimType()
         {
             const string testClaimType = ClaimTypes.Role;
             var transformer = new BasicRequestTransformer
@@ -71,7 +72,7 @@ namespace Casbin.AspNetCore.Tests
                 });
 
             // Act
-            var requestValues = transformer.Transform(casbinContext).ToArray();
+            var requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
 
             // Assert
             Assert.Equal("alice", requestValues[0]);
@@ -89,7 +90,7 @@ namespace Casbin.AspNetCore.Tests
                 });
 
             // Act
-            requestValues = transformer.Transform(casbinContext).ToArray();
+            requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
 
             // Assert
             Assert.NotEqual("alice", requestValues[0]);
@@ -98,7 +99,7 @@ namespace Casbin.AspNetCore.Tests
         }
 
         [Fact]
-        public void ShouldBasicTransformWhenSpecIssuer()
+        public async Task ShouldBasicTransformWhenSpecIssuer()
         {
             const string testIssuer = "LOCAL";
             var transformer = new BasicRequestTransformer
@@ -118,7 +119,7 @@ namespace Casbin.AspNetCore.Tests
                 });
 
             // Act
-            var requestValues = transformer.Transform(casbinContext).ToArray();
+            var requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
 
             // Assert
             Assert.Equal("alice", requestValues[0]);
@@ -136,7 +137,7 @@ namespace Casbin.AspNetCore.Tests
                 });
 
             // Act
-            requestValues = transformer.Transform(casbinContext).ToArray();
+            requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
 
             // Assert
             Assert.NotEqual("alice", requestValues[0]);

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Casbin.AspNetCore.Authorization.Transformers
 {
@@ -9,16 +10,16 @@ namespace Casbin.AspNetCore.Authorization.Transformers
         public string? Issuer { get; set; }
         public string? PreferSubClaimType { get; set; } = ClaimTypes.NameIdentifier;
 
-        public virtual IEnumerable<object> Transform(ICasbinAuthorizationContext context)
+        public virtual ValueTask<IEnumerable<object>> TransformAsync(ICasbinAuthorizationContext context, ICasbinAuthorizationData data)
         {
             var requestValues = new object[3];
-            requestValues[0] = SubTransform(context);
-            requestValues[1] = ObjTransform(context);
-            requestValues[2] = ActTransform(context);
-            return requestValues;
+            requestValues[0] = SubTransform(context, data);
+            requestValues[1] = ObjTransform(context, data);
+            requestValues[2] = ActTransform(context, data);
+            return new ValueTask<IEnumerable<object>>(requestValues);
         }
 
-        public virtual string SubTransform(ICasbinAuthorizationContext context)
+        public virtual string SubTransform(ICasbinAuthorizationContext context, ICasbinAuthorizationData data)
         {
             Claim? claim;
             if (Issuer is null)
@@ -32,10 +33,11 @@ namespace Casbin.AspNetCore.Authorization.Transformers
             return claim is null ? string.Empty : claim.Value;
         }
 
-        public virtual string ObjTransform(ICasbinAuthorizationContext context)
-            => context.Data.Resource ?? string.Empty;
+        public virtual string ObjTransform(ICasbinAuthorizationContext context, ICasbinAuthorizationData data)
+            => data.Resource ?? string.Empty;
 
-        public virtual string ActTransform(ICasbinAuthorizationContext context)
-            => context.Data.Action ?? string.Empty;
+        public virtual string ActTransform(ICasbinAuthorizationContext context, ICasbinAuthorizationData data)
+            => data.Action ?? string.Empty;
+
     }
 }
