@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -30,6 +30,21 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Casbin.AspNetCore\Casbin.AspNetCore.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="Policy\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Update="Policy\basic_model.conf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Policy\basic_policy.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
