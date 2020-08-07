@@ -29,10 +29,10 @@ namespace Casbin.AspNetCore.Authorization
             services.TryAddSingleton<
                 ICasbinAuthorizationContextFactory,
                 DefaultCasbinAuthorizationContextFactory>();
-            services.TryAddScoped<IAuthorizationHandler, CasbinAuthorizationHandler>();
             services.TryAddScoped<IEnforceService, DefaultEnforcerService>();
+            services.TryAddSingleton<IRequestTransformersCache, RequestTransformersCache>();
+            services.AddScoped<IAuthorizationHandler, CasbinAuthorizationHandler>();
             services.AddSingleton<IRequestTransformer, BasicRequestTransformer>();
-            services.AddSingleton<IRequestTransformersCache, RequestTransformersCache>();
             services.AddAuthorizationCore();
             return services;
         }
