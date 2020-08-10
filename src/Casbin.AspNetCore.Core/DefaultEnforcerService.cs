@@ -52,16 +52,26 @@ namespace Casbin.AspNetCore.Authorization
                 // 2. _options.Value.DefaultRequestTransformer >
                 // 3. _transformers.FirstOrDefault()
                 IRequestTransformer? transformer = null;
-                if (!(data.RequestTransformerType is null))
+                if (data.RequestTransformerType is not null)
                 {
                     transformer = transformersArray.FirstOrDefault( t =>
                         t.GetType() == data.RequestTransformerType);
+                    if (transformer is null)
+                    {
+                        throw new ArgumentException("Can find any specified type request transformer.", nameof(data.RequestTransformerType));
+                    }
                 }
                 else if (!noDefault)
                 {
                     transformer = _options.Value.DefaultRequestTransformer;
                 }
+
                 transformer ??= transformersArray.FirstOrDefault();
+
+                if (transformer is null)
+                {
+                    throw new ArgumentException("Can find any request transformer.", nameof(_transformersCache.Transformers));
+                }
 
                 // The order of deciding transformer.PreferSubClaimType is :
                 // 1. context.Data.PreferSubClaimType >
