@@ -11,21 +11,26 @@ namespace Casbin.AspNetCore.Authorization.Policy
 
         private AuthorizationPolicy? _emptyPolicy;
 
-        public AuthorizationPolicy Create(ICasbinAuthorizationData authorizationData)
+        public AuthorizationPolicy Create(IEnumerable<ICasbinAuthorizationData> authorizationData)
         {
-            var authTypesSplit = authorizationData.AuthenticationSchemes?.Split(',');
-            if (!(authTypesSplit?.Length > 0))
+            IList<string>? authenticationSchemes = null;
+            foreach (var data in authorizationData)
             {
-                _emptyPolicy ??=  new AuthorizationPolicy(_casbinAuthorizationRequirements, Array.Empty<string>());
-                return _emptyPolicy;
-            }
-
-            var authenticationSchemes = new List<string>();
-            foreach (var authType in authTypesSplit)
-            {
-                if (!string.IsNullOrWhiteSpace(authType))
+                var authTypesSplit = data.AuthenticationSchemes?.Split(',');
+                if (!(authTypesSplit?.Length > 0))
                 {
-                    authenticationSchemes.Add(authType.Trim());
+                    _emptyPolicy ??=  new AuthorizationPolicy(_casbinAuthorizationRequirements, Array.Empty<string>());
+                    return _emptyPolicy;
+                }
+
+                authenticationSchemes ??= new List<string>();
+
+                foreach (var authType in authTypesSplit)
+                {
+                    if (!string.IsNullOrWhiteSpace(authType))
+                    {
+                        authenticationSchemes.Add(authType.Trim());
+                    }
                 }
             }
             return new AuthorizationPolicy(_casbinAuthorizationRequirements, authenticationSchemes);

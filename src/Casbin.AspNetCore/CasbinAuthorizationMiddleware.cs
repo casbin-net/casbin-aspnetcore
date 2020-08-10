@@ -54,7 +54,7 @@ namespace Casbin.AspNetCore.Authorization
             // Policy evaluator has transient lifetime so it fetched from request services instead of injecting in constructor
             var policyEvaluator = context.RequestServices.GetRequiredService<IPolicyEvaluator>();
 
-            var policy = _policyCreator.Create(authorizeData.First());
+            var policy = _policyCreator.Create(authorizeData);
             var authenticateResult = await policyEvaluator.AuthenticateAsync(policy, context);
 
             // Allow Anonymous skips all authorization
