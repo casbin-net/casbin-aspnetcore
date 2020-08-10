@@ -10,18 +10,18 @@ namespace Casbin.AspNetCore.Authorization
 {
     public class DefaultEnforcerService : IEnforceService
     {
-        private readonly IOptions<CasbinAuthorizationCoreOptions> _options;
+        private readonly IOptions<CasbinAuthorizationOptions> _options;
         private readonly IRequestTransformersCache _transformersCache;
         private readonly IEnforcerProvider _enforcerProvider;
         private readonly ILogger<DefaultEnforcerService> _logger;
 
         public DefaultEnforcerService(
-            IOptions<CasbinAuthorizationCoreOptions> options,
+            IOptions<CasbinAuthorizationOptions> options,
             IRequestTransformersCache transformersCache,
             IEnforcerProvider enforcerProvider,
             ILogger<DefaultEnforcerService> logger)
         {
-            _options = options ?? throw new ArgumentNullException(nameof(CasbinAuthorizationCoreOptions));
+            _options = options ?? throw new ArgumentNullException(nameof(options));
             _transformersCache = transformersCache ?? throw new ArgumentNullException(nameof(transformersCache));
             _enforcerProvider = enforcerProvider ?? throw new ArgumentNullException(nameof(enforcerProvider));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

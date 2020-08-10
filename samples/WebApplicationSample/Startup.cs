@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NetCasbin;
 using System.IO;
+using System.Security.Claims;
 
 namespace WebApplicationSample
 {
@@ -35,12 +36,11 @@ namespace WebApplicationSample
             services.AddRazorPages();
 
             //Add Casbin Authorization
-            services.AddCasbinAuthorization();
-            services.AddCasbinAuthorizationCore(optionAction =>
+            services.AddCasbinAuthorization(options =>
             {
-                optionAction.DefaultEnforcerFactory = m => new Enforcer(
-                    Path.Combine("Policy","basic_model.conf"),
-                    Path.Combine("Policy","basic_policy.csv"));
+                options.PreferSubClaimType = ClaimTypes.Name;
+                options.DefaultModelPath = Path.Combine("CasbinConfigs", "basic_model.conf");
+                options.DefaultPolicyPath = Path.Combine("CasbinConfigs", "basic_policy.csv");
             });
         }
 
