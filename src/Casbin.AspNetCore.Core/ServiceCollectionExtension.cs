@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Casbin.AspNetCore.Authorization
 {
-    public static class ServiceCollectionExtension
+    public static class CoreServiceCollectionExtension
     {
         public static IServiceCollection AddCasbinAuthorizationCore(
             this IServiceCollection services,

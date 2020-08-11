@@ -6,20 +6,29 @@ namespace Casbin.AspNetCore.Authorization.Policy
 {
     public class CasbinPolicyCreator : ICasbinPolicyCreator
     {
+        public CasbinPolicyCreator()
+        {
+            _emptyPolicy = new AuthorizationPolicy(_casbinAuthorizationRequirements, Array.Empty<string>());
+        }
+
         private readonly IEnumerable<IAuthorizationRequirement> _casbinAuthorizationRequirements =
             new []{CasbinAuthorizationRequirement.Requirement};
 
-        private AuthorizationPolicy? _emptyPolicy;
+        private readonly AuthorizationPolicy _emptyPolicy;
 
         public AuthorizationPolicy Create(IEnumerable<ICasbinAuthorizationData> authorizationData)
         {
+            if (authorizationData is null)
+            {
+                throw new ArgumentNullException(nameof(authorizationData));
+            }
+
             IList<string>? authenticationSchemes = null;
             foreach (var data in authorizationData)
             {
                 var authTypesSplit = data.AuthenticationSchemes?.Split(',');
                 if (!(authTypesSplit?.Length > 0))
                 {
-                    _emptyPolicy ??=  new AuthorizationPolicy(_casbinAuthorizationRequirements, Array.Empty<string>());
                     return _emptyPolicy;
                 }
 
@@ -33,7 +42,8 @@ namespace Casbin.AspNetCore.Authorization.Policy
                     }
                 }
             }
-            return new AuthorizationPolicy(_casbinAuthorizationRequirements, authenticationSchemes);
+
+            return authenticationSchemes is null ? _emptyPolicy : new AuthorizationPolicy(_casbinAuthorizationRequirements, authenticationSchemes);
         }
     }
 }
