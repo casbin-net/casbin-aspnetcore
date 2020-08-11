@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Casbin.AspNetCore.Authorization;
@@ -10,139 +11,134 @@ namespace Casbin.AspNetCore.Tests
 {
     public class RequestTransformerTest
     {
-        [Fact]
-        public async Task ShouldBasicTransform()
+        public static IEnumerable<object[]> BasicTransformerTestData = new[]
         {
-            var transformer = new BasicRequestTransformer();
+            new object[] { ClaimTypes.NameIdentifier,
+                "alice", "data1", "read",
+                "alice", "data1", "read"},
 
-            // Success
+            new object[] { ClaimTypes.Role,
+                "alice", "data1", "write",
+                string.Empty, "data1", "write" }
+        };
+
+        [Theory]
+        [MemberData(nameof(BasicTransformerTestData))]
+        public async Task ShouldBasicTransform(
+            string claim,
+            string userName, string resource,
+            string action,
+            string userNameExpected, string resourceExpected,
+            string actionExpected)
+        {
+            // Arrange
+            var transformer = new BasicRequestTransformer();
             var user = new TestUserBuilder()
-                .AddClaim(new Claim(ClaimTypes.NameIdentifier, "alice"))
+                .AddClaim(new Claim(claim, userName))
                 .Build();
             var casbinContext =  new CasbinAuthorizationContext(user,
                 new CasbinAuthorizationData
                 {
-                    Resource = "data1", Action = "write"
+                    Resource = resource, Action = action
                 });
 
             // Act
             var requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
 
             // Assert
-            Assert.Equal("alice", requestValues[0]);
-            Assert.Equal("data1", requestValues[1]);
-            Assert.Equal("write", requestValues[2]);
-
-            // Failed
-            user = new TestUserBuilder()
-                .AddClaim(new Claim(ClaimTypes.Role, "alice"))
-                .Build();
-            casbinContext =  new CasbinAuthorizationContext(user,
-                new CasbinAuthorizationData
-                {
-                    Resource = "data1", Action = "write"
-                });
-
-            // Act
-            requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
-
-            // Assert
-            Assert.NotEqual("alice", requestValues[0]);
-            Assert.Equal("data1", requestValues[1]);
-            Assert.Equal("write", requestValues[2]);
+            Assert.Equal(userNameExpected, requestValues[0]);
+            Assert.Equal(resourceExpected, requestValues[1]);
+            Assert.Equal(actionExpected, requestValues[2]);
         }
 
-        [Fact]
-        public async Task ShouldBasicTransformWhenSpecSubClaimType()
+        public static IEnumerable<object[]> BasicTransformerTestDataWithSpecClaim = new[]
         {
+            new object[] { ClaimTypes.Role,
+                "alice", "data1", "read",
+                "alice", "data1", "read"},
+
+            new object[] { ClaimTypes.NameIdentifier,
+                "alice", "data1", "write",
+                string.Empty, "data1", "write" }
+        };
+
+        [Theory]
+        [MemberData(nameof(BasicTransformerTestDataWithSpecClaim))]
+        public async Task ShouldBasicTransformWhenSpecClaim(
+            string claim,
+            string userName, string resource,
+            string action,
+            string userNameExpected, string resourceExpected,
+            string actionExpected)
+        {
+            // Arrange
             const string testClaimType = ClaimTypes.Role;
             var transformer = new BasicRequestTransformer
             {
                 PreferSubClaimType = testClaimType
             };
-
-            // Success
             var user = new TestUserBuilder()
-                .AddClaim(new Claim(testClaimType, "alice"))
+                .AddClaim(new Claim(claim, userName))
                 .Build();
             var casbinContext =  new CasbinAuthorizationContext(user,
                 new CasbinAuthorizationData
                 {
-                    Resource = "data1", Action = "write"
+                    Resource = resource, Action = action
                 });
 
             // Act
             var requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
 
             // Assert
-            Assert.Equal("alice", requestValues[0]);
-            Assert.Equal("data1", requestValues[1]);
-            Assert.Equal("write", requestValues[2]);
-
-            // Failed
-            user = new TestUserBuilder()
-                .AddClaim(new Claim(ClaimTypes.NameIdentifier, "alice"))
-                .Build();
-            casbinContext =  new CasbinAuthorizationContext(user,
-                new CasbinAuthorizationData
-                {
-                    Resource = "data1", Action = "write"
-                });
-
-            // Act
-            requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
-
-            // Assert
-            Assert.NotEqual("alice", requestValues[0]);
-            Assert.Equal("data1", requestValues[1]);
-            Assert.Equal("write", requestValues[2]);
+            Assert.Equal(userNameExpected, requestValues[0]);
+            Assert.Equal(resourceExpected, requestValues[1]);
+            Assert.Equal(actionExpected, requestValues[2]);
         }
 
-        [Fact]
-        public async Task ShouldBasicTransformWhenSpecIssuer()
+        
+        public static IEnumerable<object[]> BasicTransformerTestDataWithSpecIssuer = new[]
         {
+            new object[] { "LOCAL", ClaimTypes.NameIdentifier,
+                "alice", "data1", "read",
+                "alice", "data1", "read"},
+
+            new object[] { "REMOTE", ClaimTypes.NameIdentifier,
+                "alice", "data1", "write",
+                string.Empty, "data1", "write" }
+        };
+
+        [Theory]
+        [MemberData(nameof(BasicTransformerTestDataWithSpecIssuer))]
+        public async Task ShouldBasicTransformWhenSpecIssuer(
+            string issuer, string claim,
+            string userName, string resource,
+            string action,
+            string userNameExpected, string resourceExpected,
+            string actionExpected)
+        {
+            // Arrange
             const string testIssuer = "LOCAL";
             var transformer = new BasicRequestTransformer
             {
                 Issuer = testIssuer
             };
-
-            // Success
             var user = new TestUserBuilder()
-                .AddClaim(new Claim(ClaimTypes.NameIdentifier, "alice",
-                    ClaimValueTypes.String, testIssuer))
+                .AddClaim(new Claim(claim, userName,
+                    ClaimValueTypes.String, issuer))
                 .Build();
             var casbinContext =  new CasbinAuthorizationContext(user,
                 new CasbinAuthorizationData
                 {
-                    Resource = "data1", Action = "write"
+                    Resource = resource, Action = action
                 });
 
             // Act
             var requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
 
             // Assert
-            Assert.Equal("alice", requestValues[0]);
-            Assert.Equal("data1", requestValues[1]);
-            Assert.Equal("write", requestValues[2]);
-
-            // Failed
-            user = new TestUserBuilder()
-                .AddClaim(new Claim(ClaimTypes.NameIdentifier, "alice"))
-                .Build();
-            casbinContext =  new CasbinAuthorizationContext(user,
-                new CasbinAuthorizationData
-                {
-                    Resource = "data1", Action = "write"
-                });
-
-            // Act
-            requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
-
-            // Assert
-            Assert.NotEqual("alice", requestValues[0]);
-            Assert.Equal("data1", requestValues[1]);
-            Assert.Equal("write", requestValues[2]);
+            Assert.Equal(userNameExpected, requestValues[0]);
+            Assert.Equal(resourceExpected, requestValues[1]);
+            Assert.Equal(actionExpected, requestValues[2]);
         }
     }
 }

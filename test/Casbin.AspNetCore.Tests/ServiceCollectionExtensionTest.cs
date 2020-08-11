@@ -1,31 +1,7 @@
-﻿using System;
-using Casbin.AspNetCore.Authorization;
-using Microsoft.Extensions.DependencyInjection;
-using NetCasbin;
-using Xunit;
-
-namespace Casbin.AspNetCore.Tests
+﻿namespace Casbin.AspNetCore.Tests
 {
     public class ServiceCollectionExtensionTest
     {
-        [Fact]
-        public void ShouldCheckOptions()
-        {
-            var collection = new ServiceCollection();
-
-            // Success
-            collection.AddCasbinAuthorizationCore(options =>
-            {
-                options.DefaultEnforcerFactory = m => new Enforcer(m);
-            });
-
-            // Failed
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                collection.AddCasbinAuthorizationCore(options =>
-                {
-                });
-            });
-        }
+        // TODO: it need more tests about more than time to call Add method.
     }
 }

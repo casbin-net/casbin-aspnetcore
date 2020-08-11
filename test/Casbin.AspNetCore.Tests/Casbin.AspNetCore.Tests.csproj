@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Casbin.AspNetCore.Core\Casbin.AspNetCore.Core.csproj" />
+    <ProjectReference Include="..\..\src\Casbin.AspNetCore\Casbin.AspNetCore.csproj" />
   </ItemGroup>
 
   <ItemGroup>
