@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Casbin.AspNetCore.Authorization
 {
@@ -26,7 +27,7 @@ namespace Casbin.AspNetCore.Authorization
         {
             if (app.ApplicationServices.GetService(typeof(ICasbinPolicyCreator)) == null)
             {
-                throw new InvalidOperationException();
+                throw new InvalidOperationException($"Unable to find the required services. Please add all the required services by calling '{nameof(IServiceCollection)}.{nameof(ServiceCollectionExtension.AddCasbinAuthorization)}' inside the call to 'ConfigureServices(...)' in the application startup code.");
             }
         }
     }
