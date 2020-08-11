@@ -1,4 +1,3 @@
-using Casbin.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
@@ -7,9 +6,6 @@ using WebApplicationSample.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using NetCasbin;
-using System.IO;
-using System.Security.Claims;
 
 namespace WebApplicationSample
 {
@@ -36,12 +32,8 @@ namespace WebApplicationSample
             services.AddRazorPages();
 
             //Add Casbin Authorization
-            services.AddCasbinAuthorization(options =>
-            {
-                options.PreferSubClaimType = ClaimTypes.Name;
-                options.DefaultModelPath = Path.Combine("CasbinConfigs", "basic_model.conf");
-                options.DefaultPolicyPath = Path.Combine("CasbinConfigs", "basic_policy.csv");
-            });
+            //services.AddCasbinAuthorizationCore();
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -63,7 +55,6 @@ namespace WebApplicationSample
             app.UseRouting();
 
             app.UseAuthentication();
-            app.UseCasbinAuthorization();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

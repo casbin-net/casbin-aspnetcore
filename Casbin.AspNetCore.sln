@@ -31,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Casbin.AspNetCore.Tests", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Casbin.AspNetCore.Performance", "test\Casbin.AspNetCore.Performance\Casbin.AspNetCore.Performance.csproj", "{82166036-4E1D-44EA-B6C2-190C5BD4EBFB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Casbin.AspNetCore.Abstractions", "src\Casbin.AspNetCore.Astractions\Casbin.AspNetCore.Abstractions.csproj", "{C6A00589-D105-452E-ADAC-16F19B2B3B2D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Casbin.AspNetCore.Abstractions", "src\Casbin.AspNetCore.Astractions\Casbin.AspNetCore.Abstractions.csproj", "{C6A00589-D105-452E-ADAC-16F19B2B3B2D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -12,10 +12,13 @@ namespace Casbin.AspNetCore.Authorization
     {
         public static IServiceCollection AddCasbinAuthorizationCore(
             this IServiceCollection services,
-            Action<CasbinAuthorizationOptions>? configure = default,
+            Action<CasbinAuthorizationCoreOptions> configure,
             ServiceLifetime defaultModelProviderLifeTime = ServiceLifetime.Scoped,
             ServiceLifetime defaultEnforcerProviderLifeTime = ServiceLifetime.Scoped)
         {
+            var options = new CasbinAuthorizationCoreOptions();
+            configure(options);
+            CheckOptions(options);
             services.Configure(configure);
             services.TryAdd(ServiceDescriptor.Describe(
                 typeof(ICasbinModelProvider), typeof(DefaultCasbinModelProvider),
@@ -32,6 +35,14 @@ namespace Casbin.AspNetCore.Authorization
             services.AddSingleton<IRequestTransformer, BasicRequestTransformer>();
             services.AddAuthorizationCore();
             return services;
+        }
+
+        private static void CheckOptions(CasbinAuthorizationCoreOptions options)
+        {
+            if (options.DefaultEnforcerFactory is null)
+            {
+                throw new ArgumentNullException(nameof(options.DefaultEnforcerFactory));
+            }
         }
     }
 }

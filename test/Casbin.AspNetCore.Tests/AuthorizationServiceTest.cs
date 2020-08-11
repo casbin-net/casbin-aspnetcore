@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Threading.Tasks;
+using Casbin.AspNetCore.Abstractions;
 using Casbin.AspNetCore.Authorization;
 using Casbin.AspNetCore.Authorization.Policy;
 using Casbin.AspNetCore.Tests.Fixtures;
@@ -17,109 +17,184 @@ namespace Casbin.AspNetCore.Tests
         private readonly ICasbinAuthorizationContextFactory _casbinAuthorizationContextFactory;
         private readonly CasbinAuthorizationRequirement _requirement = new CasbinAuthorizationRequirement();
 
-        public AuthorizationServiceTest(TestServerFixture servicesFixture)
+        public AuthorizationServiceTest(TestServerFixture testServerFixture)
         {
-            var services = servicesFixture.TestServer.Services;
+            var services = testServerFixture.TestServer.Services;
             _authorizationService = services.GetRequiredService<IAuthorizationService>();
             _casbinAuthorizationContextFactory = services.GetRequiredService<ICasbinAuthorizationContextFactory>();
         }
 
-        public static IEnumerable<object[]> BasicTestData = new[]
+        [Fact]
+        public async Task ShouldBasicAuthorizeAsync()
         {
-            new object[] {"alice", "data1", "read", true},
-            new object[] {"alice", "data1", "write", false},
-            new object[] {"bob", "data2", "read", false},
-            new object[] {"bob", "data2", "write", true}
-        };
-
-        [Theory]
-        [MemberData(nameof(BasicTestData))]
-        public async Task ShouldBasicAuthorizeAsync(
-            string userName, string resource, string action, bool expectResult)
-        {
-            // Arrange
+            // alice
             var user = new TestUserBuilder()
-                .AddClaim(new Claim(ClaimTypes.NameIdentifier, userName))
+                .AddClaim(new Claim(ClaimTypes.NameIdentifier, "alice"))
                 .Build();
-                
-            // Act
+
+            // Success
             var casbinContext = _casbinAuthorizationContextFactory.CreateContext(user,
                 new CasbinAuthorizationData
                 {
-                    Resource = resource, Action = action
+                    Resource = "data1", Action = "write"
                 });
             var result = await _authorizationService
                 .AuthorizeAsync(user, casbinContext, _requirement);
+            Assert.False(result.Succeeded);
 
-            // Assert
-            Assert.Equal(expectResult, result.Succeeded);
-        }
+            // Failed
+            casbinContext = _casbinAuthorizationContextFactory.CreateContext(user,
+                new CasbinAuthorizationData
+                {
+                    Resource = "data1", Action = "read"
+                });
+            result = await _authorizationService
+                .AuthorizeAsync(user, casbinContext, _requirement);
+            Assert.True(result.Succeeded);
 
-        public static IEnumerable<object[]> BasicTestDataWithSpecIssuer = new[]
-        {
-            new object[] {"LOCAL" ,"alice", "data1", "read", true},
-            new object[] {"LOCAL", "alice", "data1", "write", false},
-            new object[] {"REMOTE", "bob", "data2", "read", false},
-            new object[] {"REMOTE", "bob", "data2", "write", false}
-        };
-
-        [Theory]
-        [MemberData(nameof(BasicTestDataWithSpecIssuer))]
-        public async Task ShouldBasicAuthorizeWhenSpecIssuerAsync(
-            string issuer, string userName, string resource, string action, bool expectResult)
-        {
-            // Arrange
-            const string testIssuer = "LOCAL";
-            var user = new TestUserBuilder()
-                .AddClaim(new Claim(ClaimTypes.NameIdentifier, userName,
-                ClaimValueTypes.String, issuer))
+            // bob
+            user = new TestUserBuilder()
+                .AddClaim(new Claim(ClaimTypes.NameIdentifier, "bob"))
                 .Build();
 
-            // Act
+            // Success
+            casbinContext = _casbinAuthorizationContextFactory.CreateContext(user,
+                new CasbinAuthorizationData
+                {
+                    Resource = "data2", Action = "write"
+                });
+            result = await _authorizationService
+                .AuthorizeAsync(user, casbinContext, _requirement);
+            Assert.True(result.Succeeded);
+
+            // Failed
+            casbinContext = _casbinAuthorizationContextFactory.CreateContext(user,
+                new CasbinAuthorizationData
+                {
+                    Resource = "data2", Action = "read"
+                });
+            result = await _authorizationService
+                .AuthorizeAsync(user, casbinContext, _requirement);
+            Assert.False(result.Succeeded);
+        }
+
+        [Fact]
+        public async Task ShouldBasicAuthorizeWhenSpecIssuerAsync()
+        {
+            const string testIssuer = "LOCAL";
+            // alice
+            var user = new TestUserBuilder()
+                .AddClaim(new Claim(ClaimTypes.NameIdentifier, "alice",
+                ClaimValueTypes.String, testIssuer))
+                .Build();
+
+            // Success
             var casbinContext = _casbinAuthorizationContextFactory.CreateContext(user,
                 new CasbinAuthorizationData
                 {
-                    Resource = resource, Action = action,
+                    Resource = "data1", Action = "write",
                     Issuer = testIssuer
                 });
             var result = await _authorizationService
                 .AuthorizeAsync(user, casbinContext, _requirement);
+            Assert.False(result.Succeeded);
 
-            // Assert
-            Assert.Equal(expectResult, result.Succeeded);
-        }
+            // Success
+            casbinContext = _casbinAuthorizationContextFactory.CreateContext(user,
+                new CasbinAuthorizationData
+                {
+                    Resource = "data1", Action = "read",
+                    Issuer = testIssuer
+                });
+            result = await _authorizationService
+                .AuthorizeAsync(user, casbinContext, _requirement);
+            Assert.True(result.Succeeded);
 
-        public static IEnumerable<object[]> BasicTestDataWithSpecClaim = new[]
-        {
-            new object[] {ClaimTypes.Role ,"alice", "data1", "read", true},
-            new object[] {ClaimTypes.Role, "alice", "data1", "write", false},
-            new object[] {ClaimTypes.NameIdentifier, "bob", "data2", "read", false},
-            new object[] {ClaimTypes.NameIdentifier, "bob", "data2", "write", false}
-        };
-
-        [Theory]
-        [MemberData(nameof(BasicTestDataWithSpecClaim))]
-        public async Task ShouldBasicAuthorizeWhenSpecSubClaimTypeAsync(
-            string claim, string userName, string resource, string action, bool expectResult)
-        {
-            // Arrange
-            const string testClaimType = ClaimTypes.Role;
-            var user = new TestUserBuilder()
-                .AddClaim(new Claim(claim, userName))
+            // bob
+            user = new TestUserBuilder()
+                .AddClaim(new Claim(ClaimTypes.NameIdentifier, "bob"))
                 .Build();
 
-            // Assert
+            // Failed
+            casbinContext = _casbinAuthorizationContextFactory.CreateContext(user,
+                new CasbinAuthorizationData
+                {
+                    Resource = "data2", Action = "write",
+                    Issuer = testIssuer
+                });
+            result = await _authorizationService
+                .AuthorizeAsync(user, casbinContext, _requirement);
+            Assert.False(result.Succeeded);
+
+            // Failed
+            casbinContext = _casbinAuthorizationContextFactory.CreateContext(user,
+                new CasbinAuthorizationData
+                {
+                    Resource = "data2", Action = "read",
+                    Issuer = testIssuer
+                });
+            result = await _authorizationService
+                .AuthorizeAsync(user, casbinContext, _requirement);
+            Assert.False(result.Succeeded);
+        }
+
+        [Fact]
+        public async Task ShouldBasicAuthorizeWhenSpecSubClaimTypeAsync()
+        {
+            const string testClaimType = ClaimTypes.Role;
+            // alice
+            var user = new TestUserBuilder()
+                .AddClaim(new Claim(testClaimType, "alice"))
+                .Build();
+
+            // Success
             var casbinContext = _casbinAuthorizationContextFactory.CreateContext(user,
                 new CasbinAuthorizationData
                 {
-                    Resource = resource, Action = action,
+                    Resource = "data1", Action = "write",
                     PreferSubClaimType = testClaimType
                 });
             var result = await _authorizationService
                 .AuthorizeAsync(user, casbinContext, _requirement);
+            Assert.False(result.Succeeded);
 
-            // Act
-            Assert.Equal(expectResult ,result.Succeeded);
+            // Success
+            casbinContext = _casbinAuthorizationContextFactory.CreateContext(user,
+                new CasbinAuthorizationData
+                {
+                    Resource = "data1", Action = "read",
+                    PreferSubClaimType = testClaimType
+                });
+            result = await _authorizationService
+                .AuthorizeAsync(user, casbinContext, _requirement);
+            Assert.True(result.Succeeded);
+
+            // bob
+            user = new TestUserBuilder()
+                .AddClaim(new Claim(ClaimTypes.NameIdentifier, "bob"))
+                .Build();
+
+            // Failed
+            casbinContext = _casbinAuthorizationContextFactory.CreateContext(user,
+                new CasbinAuthorizationData
+                {
+                    Resource = "data2", Action = "write",
+                    PreferSubClaimType = testClaimType
+                });
+            result = await _authorizationService
+                .AuthorizeAsync(user, casbinContext, _requirement);
+            Assert.False(result.Succeeded);
+
+            // Failed
+            casbinContext = _casbinAuthorizationContextFactory.CreateContext(user,
+                new CasbinAuthorizationData
+                {
+                    Resource = "data2", Action = "read",
+                    PreferSubClaimType = testClaimType
+                });
+            result = await _authorizationService
+                .AuthorizeAsync(user, casbinContext, _requirement);
+            Assert.False(result.Succeeded);
         }
     }
 }

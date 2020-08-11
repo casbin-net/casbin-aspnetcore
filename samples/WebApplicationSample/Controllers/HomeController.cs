@@ -1,7 +1,9 @@
-﻿using System.Diagnostics;
-using Casbin.AspNetCore.Authorization;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 using Microsoft.Extensions.Logging;
 using WebApplicationSample.Models;
 
@@ -16,13 +18,11 @@ namespace WebApplicationSample.Controllers
             _logger = logger;
         }
 
-        [CasbinAuthorize(nameof(Index), nameof(HttpMethod.Get))]
         public IActionResult Index()
         {
             return View();
         }
 
-        [CasbinAuthorize]
         public IActionResult Privacy()
         {
             return View();
