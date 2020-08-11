@@ -10,8 +10,15 @@ namespace Casbin.AspNetCore.Authorization
 {
     public static class CoreServiceCollectionExtension
     {
-        public static IServiceCollection AddCasbinAuthorizationCore(
-            this IServiceCollection services,
+        /// <summary>
+        /// Adds casbin core services to the specified <see cref="IServiceCollection" />
+        /// </summary>
+        /// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
+        /// <param name="configure"></param>
+        /// <param name="defaultModelProviderLifeTime"></param>
+        /// <param name="defaultEnforcerProviderLifeTime"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddCasbin(this IServiceCollection services,
             Action<CasbinAuthorizationOptions>? configure = default,
             ServiceLifetime defaultModelProviderLifeTime = ServiceLifetime.Scoped,
             ServiceLifetime defaultEnforcerProviderLifeTime = ServiceLifetime.Scoped)
@@ -23,9 +30,25 @@ namespace Casbin.AspNetCore.Authorization
             services.TryAdd(ServiceDescriptor.Describe(
                 typeof(IEnforcerProvider), typeof(DefaultEnforcerProvider),
                 defaultEnforcerProviderLifeTime));
-            services.TryAddSingleton<
-                ICasbinAuthorizationContextFactory,
-                DefaultCasbinAuthorizationContextFactory>();
+            return services;
+        }
+
+        /// <summary>
+        /// Adds casbin authorization services to the specified <see cref="IServiceCollection" />.
+        /// </summary>
+        /// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
+        /// <param name="configure"></param>
+        /// <param name="defaultModelProviderLifeTime"></param>
+        /// <param name="defaultEnforcerProviderLifeTime"></param>
+        /// <returns>The <see cref="IServiceCollection"/> so that additional calls can be chained.</returns>
+        public static IServiceCollection AddCasbinAuthorizationCore(
+            this IServiceCollection services,
+            Action<CasbinAuthorizationOptions>? configure = default,
+            ServiceLifetime defaultModelProviderLifeTime = ServiceLifetime.Scoped,
+            ServiceLifetime defaultEnforcerProviderLifeTime = ServiceLifetime.Scoped)
+        {
+            services.AddCasbin(configure, defaultModelProviderLifeTime, defaultEnforcerProviderLifeTime);
+            services.TryAddSingleton<ICasbinAuthorizationContextFactory, DefaultCasbinAuthorizationContextFactory>();
             services.TryAddScoped<IEnforceService, DefaultEnforcerService>();
             services.TryAddSingleton<IRequestTransformersCache, RequestTransformersCache>();
             services.AddScoped<IAuthorizationHandler, CasbinAuthorizationHandler>();
