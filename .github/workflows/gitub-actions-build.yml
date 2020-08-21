@@ -88,4 +88,18 @@ jobs:
         run: dotnet nuget add source https://nuget.pkg.github.com/casbin-net/index.json --name github.com --username casbin-net --password $env:GITHUB_TOKEN
 
       - name: Push github package
-        run: dotnet nuget push .\drop-ci-packages\*.nupkg -s github.com --skip-duplicate
+        run: |
+          $count = 0;
+
+          do
+          {
+              ++$count;
+              dotnet nuget push .\drop-ci-packages\*.nupkg -s github.com --skip-duplicate;
+          }
+          while ($count -lt 3 -and $LastExitCode -ne 0)
+
+          if($LastExitCode -ne 0)
+          {
+              Write-Warning -Message "Can not push the package to github packages, laat exit code is ${LastExitCode}."
+              $LastExitCode = 0;
+          }
