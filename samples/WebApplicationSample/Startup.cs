@@ -7,7 +7,6 @@ using WebApplicationSample.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using NetCasbin;
 using System.IO;
 using System.Security.Claims;
 
@@ -24,7 +23,7 @@ namespace WebApplicationSample
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //The sample user emails are alice/bob@example.com and the password is Pass123$
+            //The sample user emails are alice@example.com/bob@example.com and password is Pass123$
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite("Data Source=UserSample.db"));
             services.AddDefaultIdentity<IdentityUser>(options =>
@@ -59,9 +58,7 @@ namespace WebApplicationSample
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
-
             app.UseAuthentication();
             app.UseCasbinAuthorization();
             app.UseAuthorization();
