@@ -27,7 +27,7 @@ namespace Casbin.AspNetCore.Authorization.Policy
             foreach (var data in authorizationData)
             {
                 var authTypesSplit = data.AuthenticationSchemes?.Split(',');
-                if (!(authTypesSplit?.Length > 0))
+                if (authTypesSplit is null || authTypesSplit.Length > 0 is false)
                 {
                     return _emptyPolicy;
                 }
@@ -36,7 +36,7 @@ namespace Casbin.AspNetCore.Authorization.Policy
 
                 foreach (var authType in authTypesSplit)
                 {
-                    if (!string.IsNullOrWhiteSpace(authType))
+                    if (string.IsNullOrWhiteSpace(authType) is false)
                     {
                         authenticationSchemes.Add(authType.Trim());
                     }
