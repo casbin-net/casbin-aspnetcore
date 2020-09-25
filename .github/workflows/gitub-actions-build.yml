@@ -7,11 +7,13 @@ on:
     branches: [ master ]
 
 env:
-  RUN_ID: build.${{ GITHUB.RUN_ID }}
-  RUN_NUMBER: build.${{ GITHUB.RUN_NUMBER }}
   SHA: ${{ GITHUB.SHA }}
-  MYGET_API_TOKEN: ${{ SECRETS.MYGET_API_TOKEN }}
+  REF: ${{ GITHUB.REF }}
+  RUN_ID: ${{ GITHUB.RUN_ID }}
+  RUN_NUMBER: ${{ GITHUB.RUN_NUMBER }}
+  BUILD_RUN_NUMBER: build.${{ GITHUB.RUN_NUMBER }}
   GITHUB_TOKEN: ${{ SECRETS.GITHUB_TOKEN }}
+  MYGET_API_TOKEN: ${{ SECRETS.MYGET_API_TOKEN }}
 
 jobs:
 
@@ -38,24 +40,7 @@ jobs:
     - name: Setup dotnet 5.0.x sdk
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.100-preview.8.20417.9
-
-    - name: Setup side by side .NET SDKs
-      shell: pwsh
-      run: |
-          $version = Split-Path (Split-Path $ENV:DOTNET_ROOT -Parent) -Leaf;
-          echo "Version is: ${version}.";
-          $root = Split-Path (Split-Path $ENV:DOTNET_ROOT -Parent) -Parent;
-          echo "Root is: ${root}.";
-          $directories = Get-ChildItem $root | Where-Object { $_.Name -ne $version };
-
-          foreach ($dir in $directories)
-          {
-              $from = $dir.FullName;
-              $to = "$root\$version";
-              echo "Copying from ${from} to ${to}.";
-              Copy-Item "$from\*" $to -Recurse -Force;
-          }
+        dotnet-version: 5.0.100-rc.1.20452.10
 
     - name: Check dotnet sdk install
       run: dotnet --info
@@ -67,17 +52,24 @@ jobs:
       run: dotnet build -c Release --no-restore
 
     - name: Test solution
-      run: dotnet test -c Release --no-build --no-restore --verbosity normal
+      run: dotnet test -c Release --no-build --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=../
 
     - name: Pack packages
+      if: github.repository_owner == 'casbin-net' && github.ref == 'refs/heads/master'
       run: |
-        $LastTag =git describe --tags (git rev-list --tags --max-count=1)
-        echo "Last tag is: ${LastTag}"
-        $Version = ($LastTag).TrimStart('v').TrimEnd("beta").TrimEnd("preview")
-        echo "Publishing version: ${Version}"
-        $PackageVersion = ($LastTag).TrimStart('v') + "-" + $env:RUN_NUMBER + "." + $env:SHA.SubString(0, 7)
-        echo "Publishing package version: ${PackageVersion}"
-        dotnet pack -c Release -o packages /p:PackageVersion=$PackageVersion /p:Version=$Version --no-build
+        $LastTag = git describe --tags (git rev-list --tags --max-count=1);
+        echo "Last tag is: $LastTag";
+
+        $Version = ($LastTag).TrimStart('v').TrimEnd("beta").TrimEnd("preview");
+        echo "Publishing version: $Version";
+
+        $NowBranchName = git rev-parse --abbrev-ref HEAD;
+        echo "Now branch name: $NowBranchName";
+
+        $PackageVersion = ($LastTag).TrimStart('v') + "-" + $env:BUILD_RUN_NUMBER + "." + $NowBranchName + "." + $env:SHA.SubString(0, 7);
+        echo "Publishing package version: ${PackageVersion}";
+
+        dotnet pack -c Release -o packages /p:PackageVersion=$PackageVersion /p:Version=$Version --no-build;
 
     - name: Publish artefacts
       uses: actions/upload-artifact@v1.0.0
