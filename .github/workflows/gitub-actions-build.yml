@@ -14,6 +14,7 @@ env:
   BUILD_RUN_NUMBER: build.${{ GITHUB.RUN_NUMBER }}
   GITHUB_TOKEN: ${{ SECRETS.GITHUB_TOKEN }}
   MYGET_API_TOKEN: ${{ SECRETS.MYGET_API_TOKEN }}
+  COVERALLS_REPO_TOKEN: ${{ SECRETS.COVERALLS_REPO_TOKEN }}
 
 jobs:
 
@@ -52,7 +53,35 @@ jobs:
       run: dotnet build -c Release --no-restore
 
     - name: Test solution
-      run: dotnet test -c Release --no-build --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=../
+      run: dotnet test -c Release --no-build --no-restore --verbosity normal -r test-results --collect:"XPlat Code Coverage" `
+           -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=json,cobertura,lcov,teamcity,opencover
+
+    - name: Upload coverage
+      if: github.repository_owner == 'casbin-net' && github.ref == 'refs/heads/master'
+      run: |
+        dotnet tool install coveralls.net --version 2.0.0-beta0002 --tool-path tools;
+
+        $CommitAuthor = git show -s --pretty=format:"%cn";
+        echo "Coomit author is: $CommitAuthor";
+
+        $CommitAuthorEmail = git show -s --pretty=format:"%ce";
+        echo "Coomit author email is: $CommitAuthorEmail";
+
+        $CommitMessage = git show -s --pretty=format:"%s";
+        echo "Coomit message is: $CommitMessage";
+
+        cp test-results/**/*.opencover.xml test-results
+
+        tools/csmacnz.Coveralls --opencover -i test-results/coverage.opencover.xml --repoToken $env:COVERALLS_REPO_TOKEN `
+        --commitId $env:SHA --commitBranch $env:REF --commitAuthor "$CommitAuthor" `
+        --commitEmail "$CommitAuthorEmail" --commitMessage "$CommitMessage" `
+        --jobId $env:RUN_NUMBER --serviceName github-actions  --useRelativePaths;
+
+        if($LastExitCode -ne 0)
+        {
+            Write-Warning -Message "Can not upload coverage, laat exit code is ${LastExitCode}."
+            $LastExitCode = 0;
+        }
 
     - name: Pack packages
       if: github.repository_owner == 'casbin-net' && github.ref == 'refs/heads/master'
@@ -71,11 +100,17 @@ jobs:
 
         dotnet pack -c Release -o packages /p:PackageVersion=$PackageVersion /p:Version=$Version --no-build;
 
-    - name: Publish artefacts
+    - name: Upload packages artefacts
       uses: actions/upload-artifact@v1.0.0
       with:
         name: "drop-ci-packages"
         path: './packages'
+
+    - name: Upload test results artefacts
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: "drop-ci-test-results"
+        path: './test-results'
 
   release-build-version:
     runs-on: windows-latest
