@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using Casbin.AspNetCore.Abstractions;
 using Microsoft.Extensions.Options;
 using NetCasbin;
 using NetCasbin.Model;

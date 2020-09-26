@@ -1,5 +1,4 @@
 ﻿using System;
-using Casbin.AspNetCore.Abstractions;
 using Casbin.AspNetCore.Authorization.Policy;
 using Casbin.AspNetCore.Authorization.Transformers;
 using Microsoft.AspNetCore.Authorization;

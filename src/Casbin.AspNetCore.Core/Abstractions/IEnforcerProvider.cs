@@ -1,7 +1,7 @@
 ﻿using NetCasbin;
 
 // ReSharper disable once CheckNamespace
-namespace Casbin.AspNetCore.Abstractions
+namespace Casbin.AspNetCore.Authorization
 {
     public interface IEnforcerProvider
     {
