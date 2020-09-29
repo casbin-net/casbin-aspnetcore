@@ -36,11 +36,8 @@ namespace Casbin.AspNetCore.Tests
             var user = new TestUserBuilder()
                 .AddClaim(new Claim(claim, userName))
                 .Build();
-            var casbinContext =  new CasbinAuthorizationContext(user,
-                new CasbinAuthorizationData
-                {
-                    Resource = resource, Action = action
-                });
+            var casbinContext = new CasbinAuthorizationContext(user,
+                new CasbinAuthorizeAttribute(resource, action));
 
             // Act
             var requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
@@ -80,11 +77,8 @@ namespace Casbin.AspNetCore.Tests
             var user = new TestUserBuilder()
                 .AddClaim(new Claim(claim, userName))
                 .Build();
-            var casbinContext =  new CasbinAuthorizationContext(user,
-                new CasbinAuthorizationData
-                {
-                    Resource = resource, Action = action
-                });
+            var casbinContext = new CasbinAuthorizationContext(user,
+                new CasbinAuthorizeAttribute(resource, action));
 
             // Act
             var requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
@@ -126,11 +120,8 @@ namespace Casbin.AspNetCore.Tests
                 .AddClaim(new Claim(claim, userName,
                     ClaimValueTypes.String, issuer))
                 .Build();
-            var casbinContext =  new CasbinAuthorizationContext(user,
-                new CasbinAuthorizationData
-                {
-                    Resource = resource, Action = action
-                });
+            var casbinContext = new CasbinAuthorizationContext(user,
+                new CasbinAuthorizeAttribute(resource, action));
 
             // Act
             var requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();

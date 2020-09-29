@@ -34,9 +34,9 @@ namespace Casbin.AspNetCore.Authorization.Transformers
         }
 
         public virtual string ObjTransform(ICasbinAuthorizationContext context, ICasbinAuthorizationData data)
-            => data.Resource ?? string.Empty;
+            => data.Value1 ?? string.Empty;
 
         public virtual string ActTransform(ICasbinAuthorizationContext context, ICasbinAuthorizationData data)
-            => data.Action ?? string.Empty;
+            => data.Value2 ?? string.Empty;
     }
 }

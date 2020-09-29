@@ -13,18 +13,76 @@ namespace Casbin.AspNetCore.Authorization
         /// </summary>
         public CasbinAuthorizeAttribute()
         {
+            ValueCount = 0;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CasbinAuthorizeAttribute"/> class. 
         /// </summary>
-        public CasbinAuthorizeAttribute(string resource, string action)
+        public CasbinAuthorizeAttribute(string value1)
         {
-            Resource = resource;
-            Action = action;
+            Value1 = value1;
+            ValueCount++;
         }
 
-        public string? Resource { get; set; }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CasbinAuthorizeAttribute"/> class. 
+        /// </summary>
+        public CasbinAuthorizeAttribute(string value1, string value2)
+            : this(value1)
+        {
+            Value2 = value2;
+            ValueCount++;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CasbinAuthorizeAttribute"/> class. 
+        /// </summary>
+        public CasbinAuthorizeAttribute(string value1, string value2, string value3)
+            : this(value1, value2)
+        {
+            Value3 = value3;
+            ValueCount++;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CasbinAuthorizeAttribute"/> class. 
+        /// </summary>
+        public CasbinAuthorizeAttribute(string value1, string value2, string value3, string value4)
+            : this(value1, value2, value3)
+        {
+            Value4 = value4;
+            ValueCount++;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CasbinAuthorizeAttribute"/> class. 
+        /// </summary>
+        public CasbinAuthorizeAttribute(string value1, string value2, string value3, string value4, string value5)
+            : this(value1, value2, value3, value4)
+        {
+            Value5 = value5;
+            ValueCount++;
+        }
+
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CasbinAuthorizeAttribute"/> class. 
+        /// </summary>
+        public CasbinAuthorizeAttribute(string value1, string value2, string value3, string value4, string value5, params string[] customValues)
+            : this(value1, value2, value3, value4, value5)
+        {
+            CustomValues = customValues;
+            ValueCount += CustomValues.Length;
+        }
+
+        public string? Value1 { get; }
+        public string? Value2 { get; }
+        public string? Value3 { get; }
+        public string? Value4 { get; }
+        public string? Value5 { get; }
+        public string[]? CustomValues { get; }
+        public int ValueCount { get; }
         public string? Action { get; set; }
         public string? Issuer { get; set; }
         public string? PreferSubClaimType { get; set; }
