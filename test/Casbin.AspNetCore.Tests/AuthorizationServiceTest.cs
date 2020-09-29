@@ -44,10 +44,7 @@ namespace Casbin.AspNetCore.Tests
                 
             // Act
             var casbinContext = _casbinAuthorizationContextFactory.CreateContext(user,
-                new CasbinAuthorizationData
-                {
-                    Resource = resource, Action = action
-                });
+                new CasbinAuthorizeAttribute(resource, action));
             var result = await _authorizationService
                 .AuthorizeAsync(user, casbinContext, _requirement);
 
@@ -77,9 +74,8 @@ namespace Casbin.AspNetCore.Tests
 
             // Act
             var casbinContext = _casbinAuthorizationContextFactory.CreateContext(user,
-                new CasbinAuthorizationData
+                new CasbinAuthorizeAttribute(resource, action)
                 {
-                    Resource = resource, Action = action,
                     Issuer = testIssuer
                 });
             var result = await _authorizationService
@@ -110,9 +106,8 @@ namespace Casbin.AspNetCore.Tests
 
             // Assert
             var casbinContext = _casbinAuthorizationContextFactory.CreateContext(user,
-                new CasbinAuthorizationData
+                new CasbinAuthorizeAttribute(resource, action)
                 {
-                    Resource = resource, Action = action,
                     PreferSubClaimType = testClaimType
                 });
             var result = await _authorizationService

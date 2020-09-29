@@ -45,10 +45,7 @@ namespace Casbin.AspNetCore.Tests
                 .Build();
             var casbinEvaluator = _serviceProvider.GetRequiredService<ICasbinEvaluator>();
             var casbinContext = _casbinAuthorizationContextFactory.CreateContext(user,
-                new CasbinAuthorizationData
-                {
-                    Resource = resource, Action = action
-                });
+                new CasbinAuthorizeAttribute(resource, action));
             var policy = _casbinPolicyCreator.Create(casbinContext.AuthorizationData);
             var httpContext = new DefaultHttpContext();
             var result = AuthenticateResult.Success(new AuthenticationTicket(user, _defaultScheme));
@@ -83,9 +80,8 @@ namespace Casbin.AspNetCore.Tests
                 .Build();
             var casbinEvaluator = _serviceProvider.GetRequiredService<ICasbinEvaluator>();
             var casbinContext = _casbinAuthorizationContextFactory.CreateContext(user,
-                new CasbinAuthorizationData
+                new CasbinAuthorizeAttribute(resource, action)
                 {
-                    Resource = resource, Action = action,
                     Issuer = testIssuer
                 });
             var policy = _casbinPolicyCreator.Create(casbinContext.AuthorizationData);
@@ -120,9 +116,8 @@ namespace Casbin.AspNetCore.Tests
                 .Build();
             var casbinEvaluator = _serviceProvider.GetRequiredService<ICasbinEvaluator>();
             var casbinContext = _casbinAuthorizationContextFactory.CreateContext(user,
-                new CasbinAuthorizationData
+                new CasbinAuthorizeAttribute(resource, action)
                 {
-                    Resource = resource, Action = action,
                     PreferSubClaimType = testClaimType
                 });
             var policy = _casbinPolicyCreator.Create(casbinContext.AuthorizationData);
