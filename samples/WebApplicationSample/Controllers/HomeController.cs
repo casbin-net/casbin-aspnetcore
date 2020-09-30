@@ -16,8 +16,13 @@ namespace WebApplicationSample.Controllers
             _logger = logger;
         }
 
-        [CasbinAuthorize(nameof(Index), nameof(HttpMethod.Get))]
         public IActionResult Index()
+        {
+            return View();
+        }
+
+        [CasbinAuthorize(nameof(BasicTest), nameof(HttpMethod.Get))]
+        public IActionResult BasicTest()
         {
             return View();
         }

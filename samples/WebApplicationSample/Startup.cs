@@ -59,7 +59,11 @@ namespace WebApplicationSample
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
+
+            //If you
             app.UseAuthentication();
+
+
             app.UseCasbinAuthorization();
             app.UseAuthorization();
 
