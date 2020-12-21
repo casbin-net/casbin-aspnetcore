@@ -27,7 +27,7 @@ namespace Casbin.AspNetCore.Authorization
 
             if (casbinContext == null)
             {
-                throw new ArgumentNullException(nameof(policy));
+                throw new ArgumentNullException(nameof(casbinContext));
             }
 
             var result = await _authorizationService.AuthorizeAsync(context.User, casbinContext, policy);
