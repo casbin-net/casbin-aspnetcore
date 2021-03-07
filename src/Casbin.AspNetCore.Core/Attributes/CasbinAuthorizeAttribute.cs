@@ -76,14 +76,13 @@ namespace Casbin.AspNetCore.Authorization
             ValueCount += CustomValues.Length;
         }
 
-        public string? Value1 { get; }
-        public string? Value2 { get; }
-        public string? Value3 { get; }
-        public string? Value4 { get; }
-        public string? Value5 { get; }
+        public string Value1 { get; } = string.Empty;
+        public string Value2 { get; } = string.Empty;
+        public string Value3 { get; } = string.Empty;
+        public string Value4 { get; } = string.Empty;
+        public string Value5 { get; } = string.Empty;
         public string[]? CustomValues { get; }
         public int ValueCount { get; }
-        public string? Action { get; set; }
         public string? Issuer { get; set; }
         public string? PreferSubClaimType { get; set; }
         public Type? RequestTransformerType { get; set; }
