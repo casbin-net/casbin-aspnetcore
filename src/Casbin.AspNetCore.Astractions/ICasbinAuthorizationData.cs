@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Net;
+using System.Net.Cache;
+using Microsoft.AspNetCore.Http;
 
 namespace Casbin.AspNetCore.Authorization
 {

@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Casbin.AspNetCore.Authorization;
+using Casbin.AspNetCore.Authorization.Transformers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 using Microsoft.Extensions.Logging;
@@ -17,6 +18,13 @@ namespace WebApplicationSample.Controllers
         }
 
         public IActionResult Index()
+        {
+            return View();
+        }
+
+        [HttpGet("attribtest")]
+        [CasbinAuthorize]
+        public IActionResult AttribRouteTest(string tenantId)
         {
             return View();
         }

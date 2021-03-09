@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.IO;
 using System.Security.Claims;
+using Casbin.AspNetCore.Authorization.Transformers;
 
 namespace WebApplicationSample
 {
@@ -40,6 +41,10 @@ namespace WebApplicationSample
                 options.PreferSubClaimType = ClaimTypes.Name;
                 options.DefaultModelPath = Path.Combine("CasbinConfigs", "basic_model.conf");
                 options.DefaultPolicyPath = Path.Combine("CasbinConfigs", "basic_policy.csv");
+
+                // Comment line below to use the default BasicRequestTransformer
+                // Note: Commenting the line means that the action methods MUST have [CasbinAuthorize()] attribute which explicitly specifies obj and policy. Otherwise authorization will be denied
+                options.DefaultRequestTransformer = new CustomRequestTransformer();
             });
         }
 

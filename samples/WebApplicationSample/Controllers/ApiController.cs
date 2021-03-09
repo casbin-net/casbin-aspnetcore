@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebApplicationSample.Controllers
 {
     [ApiController]
+    [Route("/api")]
     public class ApiController : Controller
     {
 
-        [HttpGet]
+        [HttpGet("index")]
         [CasbinAuthorize]
         public IActionResult Index()
         {
