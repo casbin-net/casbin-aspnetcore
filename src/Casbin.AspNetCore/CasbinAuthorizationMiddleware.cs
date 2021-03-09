@@ -51,6 +51,7 @@ namespace Casbin.AspNetCore.Authorization
                 return;
             }
 
+
             // Policy evaluator has transient lifetime so it fetched from request services instead of injecting in constructor
             var policyEvaluator = context.RequestServices.GetRequiredService<IPolicyEvaluator>();
 
@@ -74,7 +75,7 @@ namespace Casbin.AspNetCore.Authorization
                 resource = context;
             }
 
-            var casbinContext = context.RequestServices.GetRequiredService<ICasbinAuthorizationContextFactory>().CreateContext(context.User, authorizeData);
+            var casbinContext = context.RequestServices.GetRequiredService<ICasbinAuthorizationContextFactory>().CreateContext(context.User, authorizeData, context.Request);
 
             var authorizeResult = await context.RequestServices.GetRequiredService<ICasbinEvaluator>().AuthorizeAsync(policy, authenticateResult, context, casbinContext, resource);
 

@@ -1,1 +1,8 @@
+# Policy below will only match using both BasicRequestTransformer and CustomRequestTransformer
 p, alice@example.com, BasicTest, Get
+
+# Policy below will only match if using the CustomRequestTransformer
+p, alice@example.com, /attribtest, GET
+
+# Policy below will only match if using the CustomRequestTransformer
+#p, alice@example.com, /home/privacy, GET
