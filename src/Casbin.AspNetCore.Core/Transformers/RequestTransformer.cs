@@ -9,7 +9,7 @@ namespace Casbin.AspNetCore.Authorization.Transformers
     public class RequestTransformer : IRequestTransformer
     {
         public virtual string? Issuer { get; set; }
-        public virtual string? PreferSubClaimType { get; set; }
+        public virtual string PreferSubClaimType { get; set; } = string.Empty;
 
         public virtual ValueTask<IEnumerable<object>> TransformAsync(ICasbinAuthorizationContext context, ICasbinAuthorizationData data)
         {
@@ -23,23 +23,23 @@ namespace Casbin.AspNetCore.Authorization.Transformers
 
             if (requestValuesLength > 0)
             {
-                requestValues[0] = data.Value1 ?? string.Empty;
+                requestValues[0] = data.Value1;
             }
             if (requestValuesLength > 1)
             {
-                requestValues[1] = data.Value2 ?? string.Empty;
+                requestValues[1] = data.Value2;
             }
             if (requestValuesLength > 2)
             {
-                requestValues[2] = data.Value3 ?? string.Empty;
+                requestValues[2] = data.Value3;
             }
             if (requestValuesLength > 3)
             {
-                requestValues[3] = data.Value4 ?? string.Empty;
+                requestValues[3] = data.Value4;
             }
             if (requestValuesLength > 4)
             {
-                requestValues[4] = data.Value5 ?? string.Empty;
+                requestValues[4] = data.Value5;
             }
             if (requestValuesLength <= 5)
             {

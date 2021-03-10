@@ -53,8 +53,9 @@ namespace Casbin.AspNetCore.Authorization
                 IRequestTransformer? transformer = null;
                 if (data.RequestTransformerType is not null)
                 {
-                    transformer = transformersArray.FirstOrDefault( t =>
+                    transformer = transformersArray.FirstOrDefault(t =>
                         t.GetType() == data.RequestTransformerType);
+
                     if (transformer is null)
                     {
                         throw new ArgumentException("Can find any specified type request transformer.", nameof(data.RequestTransformerType));

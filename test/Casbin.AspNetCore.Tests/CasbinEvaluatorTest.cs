@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Casbin.AspNetCore.Authorization;
+using Casbin.AspNetCore.Tests.Extensions;
 using Casbin.AspNetCore.Tests.Fixtures;
 using Casbin.AspNetCore.Tests.Utilities;
 using Microsoft.AspNetCore.Authentication;
@@ -40,15 +41,14 @@ namespace Casbin.AspNetCore.Tests
             string userName, string resource, string action, bool expectResult)
         {
             // Arrange
-            var user = new TestUserBuilder()
+            var httpContext = new TestUserBuilder()
                 .AddClaim(new Claim(ClaimTypes.NameIdentifier, userName))
-                .Build();
+                .Build().CreateDefaultHttpContext();
             var casbinEvaluator = _serviceProvider.GetRequiredService<ICasbinEvaluator>();
-            var casbinContext = _casbinAuthorizationContextFactory.CreateContext(user,
-                new CasbinAuthorizeAttribute(resource, action));
+            var casbinContext = _casbinAuthorizationContextFactory.CreateContext(
+                new CasbinAuthorizeAttribute(resource, action), httpContext);
             var policy = _casbinPolicyCreator.Create(casbinContext.AuthorizationData);
-            var httpContext = new DefaultHttpContext();
-            var result = AuthenticateResult.Success(new AuthenticationTicket(user, _defaultScheme));
+            var result = AuthenticateResult.Success(new AuthenticationTicket(httpContext.User, _defaultScheme));
 
             // Act
             var authorizationResult  = await casbinEvaluator.AuthorizeAsync(
@@ -74,19 +74,15 @@ namespace Casbin.AspNetCore.Tests
         {
             // Arrange
             const string testIssuer = "LOCAL";
-            var user = new TestUserBuilder()
+            var httpContext = new TestUserBuilder()
                 .AddClaim(new Claim(ClaimTypes.NameIdentifier, userName,
                 ClaimValueTypes.String, issuer))
-                .Build();
+                .Build().CreateDefaultHttpContext();
             var casbinEvaluator = _serviceProvider.GetRequiredService<ICasbinEvaluator>();
-            var casbinContext = _casbinAuthorizationContextFactory.CreateContext(user,
-                new CasbinAuthorizeAttribute(resource, action)
-                {
-                    Issuer = testIssuer
-                });
+            var casbinContext = _casbinAuthorizationContextFactory.CreateContext(
+                new CasbinAuthorizeAttribute(resource, action) { Issuer = testIssuer }, httpContext);
             var policy = _casbinPolicyCreator.Create(casbinContext.AuthorizationData);
-            var httpContext = new DefaultHttpContext();
-            var result = AuthenticateResult.Success(new AuthenticationTicket(user, _defaultScheme));
+            var result = AuthenticateResult.Success(new AuthenticationTicket(httpContext.User, _defaultScheme));
 
             // Act
             var authorizationResult  = await casbinEvaluator.AuthorizeAsync(
@@ -111,18 +107,15 @@ namespace Casbin.AspNetCore.Tests
         {
             // Arrange
             const string testClaimType = ClaimTypes.Role;
-            var user = new TestUserBuilder()
+            var httpContext = new TestUserBuilder()
                 .AddClaim(new Claim(claim, userName))
-                .Build();
+                .Build().CreateDefaultHttpContext();
             var casbinEvaluator = _serviceProvider.GetRequiredService<ICasbinEvaluator>();
-            var casbinContext = _casbinAuthorizationContextFactory.CreateContext(user,
-                new CasbinAuthorizeAttribute(resource, action)
-                {
-                    PreferSubClaimType = testClaimType
-                });
+            var casbinContext = _casbinAuthorizationContextFactory.CreateContext(
+                new CasbinAuthorizeAttribute(resource, action) { PreferSubClaimType = testClaimType },
+                httpContext);
             var policy = _casbinPolicyCreator.Create(casbinContext.AuthorizationData);
-            var httpContext = new DefaultHttpContext();
-            var result = AuthenticateResult.Success(new AuthenticationTicket(user, _defaultScheme));
+            var result = AuthenticateResult.Success(new AuthenticationTicket(httpContext.User, _defaultScheme));
 
             // Act
             var authorizationResult  = await casbinEvaluator.AuthorizeAsync(

@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Casbin.AspNetCore.Authorization;
 using Casbin.AspNetCore.Authorization.Transformers;
+using Casbin.AspNetCore.Tests.Extensions;
 using Casbin.AspNetCore.Tests.Utilities;
 using Xunit;
 
@@ -35,11 +36,11 @@ namespace Casbin.AspNetCore.Tests
         {
             // Arrange
             var transformer = new BasicRequestTransformer();
-            var user = new TestUserBuilder()
+            var httpContext = new TestUserBuilder()
                 .AddClaim(new Claim(claim, userName))
-                .Build();
-            var casbinContext = new CasbinAuthorizationContext(user,
-                new CasbinAuthorizeAttribute(resource, action));
+                .Build().CreateDefaultHttpContext();
+            var casbinContext = new CasbinAuthorizationContext(
+                new CasbinAuthorizeAttribute(resource, action), httpContext);
 
             // Act
             object[] requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
@@ -76,11 +77,11 @@ namespace Casbin.AspNetCore.Tests
             {
                 PreferSubClaimType = testClaimType
             };
-            var user = new TestUserBuilder()
+            var httpContext = new TestUserBuilder()
                 .AddClaim(new Claim(claim, userName))
-                .Build();
-            var casbinContext = new CasbinAuthorizationContext(user,
-                new CasbinAuthorizeAttribute(resource, action));
+                .Build().CreateDefaultHttpContext();
+            var casbinContext = new CasbinAuthorizationContext(
+                new CasbinAuthorizeAttribute(resource, action), httpContext);
 
             // Act
             object[] requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
@@ -117,12 +118,12 @@ namespace Casbin.AspNetCore.Tests
             {
                 Issuer = testIssuer
             };
-            var user = new TestUserBuilder()
+            var httpContext = new TestUserBuilder()
                 .AddClaim(new Claim(claim, userName,
                     ClaimValueTypes.String, issuer))
-                .Build();
-            var casbinContext = new CasbinAuthorizationContext(user,
-                new CasbinAuthorizeAttribute(resource, action));
+                .Build().CreateDefaultHttpContext();
+            var casbinContext = new CasbinAuthorizationContext(
+                new CasbinAuthorizeAttribute(resource, action), httpContext);
 
             // Act
             object[] requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
@@ -159,11 +160,11 @@ namespace Casbin.AspNetCore.Tests
         {
             // Arrange
             var transformer = new RbacRequestTransformer();
-            var user = new TestUserBuilder()
+            var httpContext = new TestUserBuilder()
                 .AddClaim(new Claim(claim, userName))
-                .Build();
-            var casbinContext = new CasbinAuthorizationContext(user,
-                new CasbinAuthorizeAttribute(resource, action));
+                .Build().CreateDefaultHttpContext();
+            var casbinContext = new CasbinAuthorizationContext(
+                new CasbinAuthorizeAttribute(resource, action), httpContext);
 
             // Act
             object[] requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
@@ -200,11 +201,11 @@ namespace Casbin.AspNetCore.Tests
             {
                 PreferSubClaimType = testClaimType
             };
-            var user = new TestUserBuilder()
+            var httpContext = new TestUserBuilder()
                 .AddClaim(new Claim(claim, userName))
-                .Build();
-            var casbinContext = new CasbinAuthorizationContext(user,
-                new CasbinAuthorizeAttribute(resource, action));
+                .Build().CreateDefaultHttpContext();
+            var casbinContext = new CasbinAuthorizationContext(
+                new CasbinAuthorizeAttribute(resource, action), httpContext);
 
             // Act
             object[] requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
@@ -242,12 +243,12 @@ namespace Casbin.AspNetCore.Tests
             {
                 Issuer = testIssuer
             };
-            var user = new TestUserBuilder()
+            var httpContext = new TestUserBuilder()
                 .AddClaim(new Claim(claim, userName,
                     ClaimValueTypes.String, issuer))
-                .Build();
-            var casbinContext = new CasbinAuthorizationContext(user,
-                new CasbinAuthorizeAttribute(resource, action));
+                .Build().CreateDefaultHttpContext();
+            var casbinContext = new CasbinAuthorizationContext(
+                new CasbinAuthorizeAttribute(resource, action), httpContext);
 
             // Act
             object[] requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();

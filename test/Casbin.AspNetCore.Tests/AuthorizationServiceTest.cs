@@ -3,9 +3,11 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Casbin.AspNetCore.Authorization;
 using Casbin.AspNetCore.Authorization.Policy;
+using Casbin.AspNetCore.Tests.Extensions;
 using Casbin.AspNetCore.Tests.Fixtures;
 using Casbin.AspNetCore.Tests.Utilities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -38,15 +40,15 @@ namespace Casbin.AspNetCore.Tests
             string userName, string resource, string action, bool expectResult)
         {
             // Arrange
-            var user = new TestUserBuilder()
+            var httpContext = new TestUserBuilder()
                 .AddClaim(new Claim(ClaimTypes.NameIdentifier, userName))
-                .Build();
-                
+                .Build().CreateDefaultHttpContext();
+
             // Act
-            var casbinContext = _casbinAuthorizationContextFactory.CreateContext(user,
-                new CasbinAuthorizeAttribute(resource, action));
+            var casbinContext = _casbinAuthorizationContextFactory.CreateContext(
+                new CasbinAuthorizeAttribute(resource, action), httpContext);
             var result = await _authorizationService
-                .AuthorizeAsync(user, casbinContext, _requirement);
+                .AuthorizeAsync(httpContext.User, casbinContext, _requirement);
 
             // Assert
             Assert.Equal(expectResult, result.Succeeded);
@@ -67,19 +69,16 @@ namespace Casbin.AspNetCore.Tests
         {
             // Arrange
             const string testIssuer = "LOCAL";
-            var user = new TestUserBuilder()
+            var httpContext = new TestUserBuilder()
                 .AddClaim(new Claim(ClaimTypes.NameIdentifier, userName,
                 ClaimValueTypes.String, issuer))
-                .Build();
+                .Build().CreateDefaultHttpContext();
 
             // Act
-            var casbinContext = _casbinAuthorizationContextFactory.CreateContext(user,
-                new CasbinAuthorizeAttribute(resource, action)
-                {
-                    Issuer = testIssuer
-                });
+            var casbinContext = _casbinAuthorizationContextFactory.CreateContext(
+                new CasbinAuthorizeAttribute(resource, action) { Issuer = testIssuer }, httpContext);
             var result = await _authorizationService
-                .AuthorizeAsync(user, casbinContext, _requirement);
+                .AuthorizeAsync(httpContext.User, casbinContext, _requirement);
 
             // Assert
             Assert.Equal(expectResult, result.Succeeded);
@@ -100,21 +99,19 @@ namespace Casbin.AspNetCore.Tests
         {
             // Arrange
             const string testClaimType = ClaimTypes.Role;
-            var user = new TestUserBuilder()
+            var httpContext = new TestUserBuilder()
                 .AddClaim(new Claim(claim, userName))
-                .Build();
+                .Build().CreateDefaultHttpContext();
 
             // Assert
-            var casbinContext = _casbinAuthorizationContextFactory.CreateContext(user,
-                new CasbinAuthorizeAttribute(resource, action)
-                {
-                    PreferSubClaimType = testClaimType
-                });
+            var casbinContext = _casbinAuthorizationContextFactory.CreateContext(
+                new CasbinAuthorizeAttribute(resource, action) { PreferSubClaimType = testClaimType },
+                httpContext);
             var result = await _authorizationService
-                .AuthorizeAsync(user, casbinContext, _requirement);
+                .AuthorizeAsync(httpContext.User, casbinContext, _requirement);
 
             // Act
-            Assert.Equal(expectResult ,result.Succeeded);
+            Assert.Equal(expectResult, result.Succeeded);
         }
     }
 }

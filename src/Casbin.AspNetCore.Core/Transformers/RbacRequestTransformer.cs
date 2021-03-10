@@ -7,7 +7,7 @@ namespace Casbin.AspNetCore.Authorization.Transformers
 {
     public class RbacRequestTransformer : BasicRequestTransformer
     {
-        public override string? PreferSubClaimType { get; set; } = ClaimTypes.Role;
+        public override string PreferSubClaimType { get; set; } = ClaimTypes.Role;
 
         public override ValueTask<IEnumerable<object>> TransformAsync(ICasbinAuthorizationContext context, ICasbinAuthorizationData data)
         {

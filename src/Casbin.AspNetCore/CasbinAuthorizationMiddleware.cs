@@ -75,7 +75,7 @@ namespace Casbin.AspNetCore.Authorization
                 resource = context;
             }
 
-            var casbinContext = context.RequestServices.GetRequiredService<ICasbinAuthorizationContextFactory>().CreateContext(context.User, authorizeData, context.Request);
+            var casbinContext = context.RequestServices.GetRequiredService<ICasbinAuthorizationContextFactory>().CreateContext(authorizeData, context);
 
             var authorizeResult = await context.RequestServices.GetRequiredService<ICasbinEvaluator>().AuthorizeAsync(policy, authenticateResult, context, casbinContext, resource);
 

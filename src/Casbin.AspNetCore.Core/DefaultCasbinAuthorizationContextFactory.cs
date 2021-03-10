@@ -7,11 +7,11 @@ namespace Casbin.AspNetCore.Authorization
     public class DefaultCasbinAuthorizationContextFactory : ICasbinAuthorizationContextFactory
     {
         public ICasbinAuthorizationContext CreateContext(
-            ClaimsPrincipal user, ICasbinAuthorizationData data, HttpRequest? request = null)
-            => new CasbinAuthorizationContext(user, data, request);
+            ICasbinAuthorizationData data,  HttpContext httpContext)
+            => new CasbinAuthorizationContext(data, httpContext);
 
         public ICasbinAuthorizationContext CreateContext(
-            ClaimsPrincipal user, IEnumerable<ICasbinAuthorizationData> data, HttpRequest? request = null)
-            => new CasbinAuthorizationContext(user, data, request);
+            IEnumerable<ICasbinAuthorizationData> data,  HttpContext httpContext)
+            => new CasbinAuthorizationContext(data, httpContext);
     }
 }

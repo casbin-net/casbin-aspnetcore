@@ -6,8 +6,7 @@ namespace Casbin.AspNetCore.Authorization
 {
     public interface ICasbinAuthorizationContext
     {
-        public ClaimsPrincipal User { get; }
         public IEnumerable<ICasbinAuthorizationData> AuthorizationData { get; }
-        public HttpRequest? Request { get; }
+        public HttpContext HttpContext { get; }
     }
 }

@@ -6,22 +6,21 @@ namespace Casbin.AspNetCore.Authorization
 {
     public class CasbinAuthorizationContext : ICasbinAuthorizationContext
     {
-        public CasbinAuthorizationContext(ClaimsPrincipal user, ICasbinAuthorizationData data, HttpRequest? request = null)
-            : this(user, new[]{ data }, request)
+        public CasbinAuthorizationContext(ICasbinAuthorizationData data, HttpContext httpContext)
+            : this(new[]{ data }, httpContext)
         {
         }
 
-        public CasbinAuthorizationContext(ClaimsPrincipal user, IEnumerable<ICasbinAuthorizationData> data, HttpRequest? request = null)
+        public CasbinAuthorizationContext(IEnumerable<ICasbinAuthorizationData> data, HttpContext httpContext)
         {
-            User = user;
             AuthorizationData = data;
-            Request = request;
+            HttpContext = httpContext;
         }
 
-        public ClaimsPrincipal User { get; }
+
         public IEnumerable<ICasbinAuthorizationData> AuthorizationData { get; }
 
-        public HttpRequest? Request { get; }
+        public HttpContext HttpContext { get; }
 
     }
 }

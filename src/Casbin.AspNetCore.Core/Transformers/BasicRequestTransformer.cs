@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Casbin.AspNetCore.Authorization.Transformers
 {
     public class BasicRequestTransformer : RequestTransformer
     {
-        public override string? PreferSubClaimType { get; set; } = ClaimTypes.NameIdentifier;
+        public override string PreferSubClaimType { get; set; } = ClaimTypes.NameIdentifier;
 
         public override ValueTask<IEnumerable<object>> TransformAsync(ICasbinAuthorizationContext context, ICasbinAuthorizationData data)
         {
@@ -21,14 +22,15 @@ namespace Casbin.AspNetCore.Authorization.Transformers
 
         protected virtual string SubTransform(ICasbinAuthorizationContext context, ICasbinAuthorizationData data)
         {
+            HttpContext httpContext = context.HttpContext;
             Claim? claim;
             if (Issuer is null)
             {
-                claim = context.User.FindFirst(PreferSubClaimType);
+                claim = httpContext.User.FindFirst(PreferSubClaimType);
                 return claim is null ? string.Empty : claim.Value;
             }
 
-            claim = context.User.FindAll(PreferSubClaimType).FirstOrDefault(
+            claim = httpContext.User.FindAll(PreferSubClaimType).FirstOrDefault(
                 c => string.Equals(c.Issuer, Issuer));
             return claim is null ? string.Empty : claim.Value;
         }
