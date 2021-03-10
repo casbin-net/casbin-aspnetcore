@@ -9,7 +9,7 @@
 
   <PropertyGroup>
     <Authors>Casbin.NET</Authors>
-    <RepositoryUrl>https://github.com/casbin-net/Casbin.AspNetCore</RepositoryUrl>
+    <RepositoryUrl>https://github.com/casbin-net/casbin-aspnetcore</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <Company>Casbin.NET</Company>
     <Copyright>Apache License 2.0</Copyright>
