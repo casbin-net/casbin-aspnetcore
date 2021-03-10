@@ -135,6 +135,8 @@ namespace Casbin.AspNetCore.Tests
 
         #endregion
 
+        #region Rbac request transformer test
+
         public static IEnumerable<object[]> RbacTransformerTestData = new[]
         {
             new object[] { ClaimTypes.Role,
@@ -176,11 +178,11 @@ namespace Casbin.AspNetCore.Tests
         {
             new object[] { ClaimTypes.Role,
                 "alice", "data1", "read",
-                "alice", "data1", "read"},
+                string.Empty, "data1", "read"},
 
             new object[] { ClaimTypes.NameIdentifier,
                 "alice", "data1", "write",
-                string.Empty, "data1", "write" }
+                "alice", "data1", "write" }
         };
 
         [Theory]
@@ -193,8 +195,8 @@ namespace Casbin.AspNetCore.Tests
             string actionExpected)
         {
             // Arrange
-            const string testClaimType = ClaimTypes.Role;
-            var transformer = new BasicRequestTransformer
+            const string testClaimType = ClaimTypes.NameIdentifier;
+            var transformer = new RbacRequestTransformer
             {
                 PreferSubClaimType = testClaimType
             };
@@ -216,11 +218,11 @@ namespace Casbin.AspNetCore.Tests
         
         public static IEnumerable<object[]> RbacTransformerTestDataWithSpecIssuer = new[]
         {
-            new object[] { "LOCAL", ClaimTypes.NameIdentifier,
+            new object[] { "LOCAL", ClaimTypes.Role,
                 "alice", "data1", "read",
                 "alice", "data1", "read"},
 
-            new object[] { "REMOTE", ClaimTypes.NameIdentifier,
+            new object[] { "REMOTE", ClaimTypes.Role,
                 "alice", "data1", "write",
                 string.Empty, "data1", "write" }
         };
@@ -236,7 +238,7 @@ namespace Casbin.AspNetCore.Tests
         {
             // Arrange
             const string testIssuer = "LOCAL";
-            var transformer = new BasicRequestTransformer
+            var transformer = new RbacRequestTransformer
             {
                 Issuer = testIssuer
             };
@@ -255,5 +257,7 @@ namespace Casbin.AspNetCore.Tests
             Assert.Equal(resourceExpected, requestValues[1]);
             Assert.Equal(actionExpected, requestValues[2]);
         }
+
+        #endregion
     }
 }

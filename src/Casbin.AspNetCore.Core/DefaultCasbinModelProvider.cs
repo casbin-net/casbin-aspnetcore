@@ -40,8 +40,7 @@ namespace Casbin.AspNetCore.Authorization
                 throw new FileNotFoundException("Can not find the model file path.", modelPath);
             }
 
-            // it will changed at next Casbin.NET version (v1.3.2 or later)
-            _model ??= CoreEnforcer.NewModel(_options.Value.DefaultModelPath, null);
+            _model ??= Model.CreateDefaultFromFile(_options.Value.DefaultModelPath);
             return _model;
         }
     }
