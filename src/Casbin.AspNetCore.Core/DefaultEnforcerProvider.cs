@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using NetCasbin;
 using NetCasbin.Model;
@@ -9,13 +10,15 @@ namespace Casbin.AspNetCore.Authorization
 {
     public class DefaultEnforcerProvider : IEnforcerProvider
     {
+        private readonly IServiceProvider _serviceProvider;
         private readonly IOptions<CasbinAuthorizationOptions> _options;
         private readonly ICasbinModelProvider _modelProvider;
         private Enforcer? _enforcer;
 
-        public DefaultEnforcerProvider(IOptions<CasbinAuthorizationOptions> options,
+        public DefaultEnforcerProvider(IServiceProvider serviceProvider, IOptions<CasbinAuthorizationOptions> options,
             ICasbinModelProvider modelProvider)
         {
+            _serviceProvider = serviceProvider;
             _options = options ?? throw new ArgumentNullException(nameof(options));
             _modelProvider = modelProvider ?? throw new ArgumentNullException(nameof(modelProvider));
         }
@@ -29,20 +32,21 @@ namespace Casbin.AspNetCore.Authorization
 
             if (_options.Value.DefaultEnforcerFactory is not null)
             {
-                _enforcer ??= _options.Value.DefaultEnforcerFactory(_modelProvider.GetModel());
+                using IServiceScope scope = _serviceProvider.CreateScope();
+                _enforcer ??= _options.Value.DefaultEnforcerFactory(scope.ServiceProvider, _modelProvider.GetModel());
                 return _enforcer;
             }
 
             Model? model = _modelProvider.GetModel();
             if (model is null)
             {
-                throw new ArgumentException($"{_modelProvider.GetModel()} can not return null when {nameof(_options.Value.DefaultEnforcerFactory)} option is empty");
+                throw new ArgumentException($"GetModel method of {nameof(ICasbinModelProvider)} can not return null when {nameof(_options.Value.DefaultEnforcerFactory)} option is empty");
             }
 
             string? policyPath = _options.Value.DefaultPolicyPath;
             if (policyPath is not null)
             {
-                if (!File.Exists(policyPath))
+                if (File.Exists(policyPath) is false)
                 {
                     throw new FileNotFoundException("Can not find the policy file path.", policyPath);
                 }

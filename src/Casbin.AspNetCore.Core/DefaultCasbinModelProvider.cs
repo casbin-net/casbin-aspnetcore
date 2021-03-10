@@ -35,7 +35,7 @@ namespace Casbin.AspNetCore.Authorization
                 modelPath = _fallbackModelPath;
             }
 
-            if (!File.Exists(modelPath))
+            if (File.Exists(modelPath) is false)
             {
                 throw new FileNotFoundException("Can not find the model file path.", modelPath);
             }
