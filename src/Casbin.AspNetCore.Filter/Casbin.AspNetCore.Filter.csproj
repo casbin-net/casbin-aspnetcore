@@ -8,12 +8,15 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <Authors>Casbin.NET</Authors>
     <RepositoryUrl>https://github.com/casbin-net/casbin-aspnetcore</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <Company>Casbin.NET</Company>
     <Copyright>Apache License 2.0</Copyright>
-    <IsPackable>true</IsPackable>
     <PackageTags>aspnetcore;authorization;security</PackageTags>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
