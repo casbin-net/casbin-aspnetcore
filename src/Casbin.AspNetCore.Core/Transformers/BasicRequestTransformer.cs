@@ -15,8 +15,11 @@ namespace Casbin.AspNetCore.Authorization.Transformers
         {
             object[] requestValues = new object[data.ValueCount + 1];
             requestValues[0] = SubTransform(context, data);
-            requestValues[1] = ObjTransform(context, data, d => d.Value1);
-            requestValues[2] = ActTransform(context, data, d => d.Value2);
+
+            requestValues[1] = ObjTransform(context, data,
+                (_, d) => d.Value1);
+            requestValues[2] = ActTransform(context, data,
+                (_, d) => d.Value2);
             return new ValueTask<IEnumerable<object>>(requestValues);
         }
 
@@ -35,10 +38,11 @@ namespace Casbin.AspNetCore.Authorization.Transformers
             return claim is null ? string.Empty : claim.Value;
         }
 
-        protected virtual string ObjTransform(ICasbinAuthorizationContext context, ICasbinAuthorizationData data, Func<ICasbinAuthorizationData, string> valueSelector)
-            => valueSelector(data);
+        protected virtual string ObjTransform(ICasbinAuthorizationContext context, ICasbinAuthorizationData data,
+            Func<ICasbinAuthorizationContext, ICasbinAuthorizationData, string> valueSelector)
+            => valueSelector(context, data);
 
-        protected virtual string ActTransform(ICasbinAuthorizationContext context, ICasbinAuthorizationData data, Func<ICasbinAuthorizationData, string> valueSelector)
-            => valueSelector(data);
+        protected virtual string ActTransform(ICasbinAuthorizationContext context, ICasbinAuthorizationData data, Func<ICasbinAuthorizationContext, ICasbinAuthorizationData, string> valueSelector)
+            => valueSelector(context, data);
     }
 }

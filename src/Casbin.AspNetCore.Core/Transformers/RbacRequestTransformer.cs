@@ -17,22 +17,27 @@ namespace Casbin.AspNetCore.Authorization.Transformers
             switch (requestValues.Length)
             {
                 case 3:
-                    requestValues[1] = ObjTransform(context, data, d => d.Value1);
-                    requestValues[2] = ActTransform(context, data, d => d.Value2);
+                    requestValues[1] = ObjTransform(context, data,
+                        (_, d) => d.Value1);
+                    requestValues[2] = ActTransform(context, data,
+                        (_, d) => d.Value2);
                     break;
                 case 4:
-                    requestValues[1] = DomTransform(context, data, d => d.Value1);
-                    requestValues[2] = ObjTransform(context, data, d => d.Value2);
-                    requestValues[3] = ActTransform(context, data, d => d.Value3);
+                    requestValues[1] = DomTransform(context, data,
+                        (_, d) => d.Value1);
+                    requestValues[2] = ObjTransform(context, data,
+                        (_, d) => d.Value2);
+                    requestValues[3] = ActTransform(context, data,
+                        (_, d) => d.Value3);
                     break;
             }
 
             return new ValueTask<IEnumerable<object>>(requestValues);
         }
 
-        protected virtual string DomTransform(ICasbinAuthorizationContext context, ICasbinAuthorizationData data, Func<ICasbinAuthorizationData, string> valueSelector)
+        protected virtual string DomTransform(ICasbinAuthorizationContext context, ICasbinAuthorizationData data, Func<ICasbinAuthorizationContext, ICasbinAuthorizationData, string> valueSelector)
         {
-            return valueSelector(data);
+            return valueSelector(context, data);
         }
     }
 }
