@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Casbin.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Policy;
-using Microsoft.AspNetCore.Http;
 
 namespace Casbin.AspNetCore.Authorization
 {
@@ -16,24 +16,27 @@ namespace Casbin.AspNetCore.Authorization
             _authorizationService = authorizationService;
         }
 
-        public async Task<PolicyAuthorizationResult> AuthorizeAsync(AuthorizationPolicy policy,
-            AuthenticateResult authenticationResult, HttpContext context,
-            ICasbinAuthorizationContext casbinContext, object? resource)
+        public virtual async Task<PolicyAuthorizationResult> AuthorizeAsync(ICasbinAuthorizationContext casbinContext, AuthorizationPolicy policy, AuthenticateResult? authenticationResult = null)
         {
-            if (policy == null)
+            if (policy is null)
             {
                 throw new ArgumentNullException(nameof(policy));
             }
 
-            if (casbinContext == null)
+            if (casbinContext is null)
             {
                 throw new ArgumentNullException(nameof(casbinContext));
             }
 
-            var result = await _authorizationService.AuthorizeAsync(context.User, casbinContext, policy);
+            var result = await _authorizationService.AuthorizeAsync(casbinContext.HttpContext.User, casbinContext, policy);
             if (result.Succeeded)
             {
                 return PolicyAuthorizationResult.Success();
+            }
+
+            if (authenticationResult is null)
+            {
+                return PolicyAuthorizationResult.Forbid();
             }
 
             // If authentication was successful, return forbidden, otherwise challenge

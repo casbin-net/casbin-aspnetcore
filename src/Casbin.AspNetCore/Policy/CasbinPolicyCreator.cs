@@ -26,7 +26,7 @@ namespace Casbin.AspNetCore.Authorization.Policy
             IList<string>? authenticationSchemes = null;
             foreach (var data in authorizationData)
             {
-                var authTypesSplit = data.AuthenticationSchemes?.Split(',');
+                string[]? authTypesSplit = data.AuthenticationSchemes?.Split(',');
                 if (authTypesSplit is null || authTypesSplit.Length > 0 is false)
                 {
                     return _emptyPolicy;

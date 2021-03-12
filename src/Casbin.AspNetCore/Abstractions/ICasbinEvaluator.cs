@@ -8,8 +8,7 @@ namespace Casbin.AspNetCore.Authorization
 {
     public interface ICasbinEvaluator
     {
-        public Task<PolicyAuthorizationResult> AuthorizeAsync(AuthorizationPolicy authorizationPolicy,
-            AuthenticateResult authenticationResult, HttpContext context,
-            ICasbinAuthorizationContext casbinContext, object? resource);
+        public Task<PolicyAuthorizationResult> AuthorizeAsync(ICasbinAuthorizationContext casbinContext,
+            AuthorizationPolicy policy, AuthenticateResult? authenticationResult = null);
     }
 }

@@ -1,29 +1,28 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Casbin.AspNetCore.Authorization
 {
     public class CasbinAuthorizationMiddleware
     {
-        // AppContext switch used to control whether HttpContext or endpoint is passed as a resource to AuthZ
-        private const string SuppressUseHttpContextAsAuthorizationResource = "Microsoft.AspNetCore.Authorization.SuppressUseHttpContextAsAuthorizationResource";
-
-        // Property key is used by Endpoint routing to determine if Authorization has run
-        private const string AuthorizationMiddlewareInvokedWithEndpointKey = "__AuthorizationMiddlewareWithEndpointInvoked";
-        private static readonly object _authorizationMiddlewareWithEndpointInvokedValue = new object();
+        private const string s_casbinAuthorizationMiddlewareInvokedWithEndpointKey = "__CasbinAuthorizationMiddlewareWithEndpointInvoked";
+        private static readonly object s_casbinAuthorizationMiddlewareWithEndpointInvokedValue = new();
 
         private readonly RequestDelegate _next;
         private readonly ICasbinPolicyCreator _policyCreator;
+        private readonly IOptions<CasbinAuthorizationOptions> _options;
 
-        public CasbinAuthorizationMiddleware(RequestDelegate next, ICasbinPolicyCreator policyCreator)
+        public CasbinAuthorizationMiddleware(RequestDelegate next, ICasbinPolicyCreator policyCreator, IOptions<CasbinAuthorizationOptions> options)
         {
             _next = next ?? throw new ArgumentNullException(nameof(next));
-            _policyCreator = policyCreator ?? throw new ArgumentNullException(nameof(policyCreator)); ;
+            _policyCreator = policyCreator ?? throw new ArgumentNullException(nameof(policyCreator));
+            _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
         public async Task Invoke(HttpContext context)
@@ -34,12 +33,9 @@ namespace Casbin.AspNetCore.Authorization
             }
 
             var endpoint = context.GetEndpoint();
-
-            if (endpoint != null)
+            if (endpoint is not null)
             {
-                // EndpointRoutingMiddleware uses this flag to check if the Authorization middleware processed auth metadata on the endpoint.
-                // The Authorization middleware can only make this claim if it observes an actual endpoint.
-                context.Items[AuthorizationMiddlewareInvokedWithEndpointKey] = _authorizationMiddlewareWithEndpointInvokedValue;
+                context.Items[s_casbinAuthorizationMiddlewareInvokedWithEndpointKey] = s_casbinAuthorizationMiddlewareWithEndpointInvokedValue;
             }
 
             // IMPORTANT: Changes to authorization logic should be mirrored in MVC's AuthorizeFilter
@@ -51,33 +47,29 @@ namespace Casbin.AspNetCore.Authorization
                 return;
             }
 
-
-            // Policy evaluator has transient lifetime so it fetched from request services instead of injecting in constructor
-            var policyEvaluator = context.RequestServices.GetRequiredService<IPolicyEvaluator>();
-
+            bool allowAnyone = _options.Value.AllowAnyone;
             var policy = _policyCreator.Create(authorizeData);
-            var authenticateResult = await policyEvaluator.AuthenticateAsync(policy, context);
+
+            AuthenticateResult? authenticateResult = null;
+            if (allowAnyone is false)
+            {
+                // Policy evaluator has transient lifetime so it fetched from request services instead of injecting in constructor
+                var policyEvaluator = context.RequestServices.GetRequiredService<IPolicyEvaluator>();
+                authenticateResult = await policyEvaluator.AuthenticateAsync(policy, context);
+            }
 
             // Allow Anonymous skips all authorization
-            if (endpoint?.Metadata.GetMetadata<IAllowAnonymous>() != null)
+            if (endpoint?.Metadata.GetMetadata<IAllowAnonymous>() is not null)
             {
                 await _next(context);
                 return;
             }
 
-            object? resource;
-            if (AppContext.TryGetSwitch(SuppressUseHttpContextAsAuthorizationResource, out bool useEndpointAsResource) && useEndpointAsResource)
-            {
-                resource = endpoint;
-            }
-            else
-            {
-                resource = context;
-            }
+            var casbinAuthorizationContextFactory = context.RequestServices.GetRequiredService<ICasbinAuthorizationContextFactory>();
+            var casbinAuthorizationContext = casbinAuthorizationContextFactory.CreateContext(authorizeData, context);
 
-            var casbinContext = context.RequestServices.GetRequiredService<ICasbinAuthorizationContextFactory>().CreateContext(authorizeData, context);
-
-            var authorizeResult = await context.RequestServices.GetRequiredService<ICasbinEvaluator>().AuthorizeAsync(policy, authenticateResult, context, casbinContext, resource);
+            var casbinEvaluator = context.RequestServices.GetRequiredService<ICasbinEvaluator>();
+            var authorizeResult = await casbinEvaluator.AuthorizeAsync(casbinAuthorizationContext, policy, authenticateResult);
 
             var authorizationMiddlewareResultHandler = context.RequestServices.GetRequiredService<ICasbinAuthorizationMiddlewareResultHandler>();
             await authorizationMiddlewareResultHandler.HandleAsync(_next, context, policy, authorizeResult);

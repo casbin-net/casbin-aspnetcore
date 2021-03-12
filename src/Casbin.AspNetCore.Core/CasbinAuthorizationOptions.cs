@@ -12,5 +12,6 @@ namespace Casbin.AspNetCore.Authorization
         public Func<IServiceProvider, Model?, Enforcer>? DefaultEnforcerFactory { get; set; }
         public string PreferSubClaimType { get; set; } = ClaimTypes.NameIdentifier;
         public IRequestTransformer? DefaultRequestTransformer { get; set; }
+        public bool AllowAnyone { get; set; } = false;
     }
 }
