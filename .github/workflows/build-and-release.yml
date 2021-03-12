@@ -83,11 +83,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Dry-run semantic-release
+      - name: Run semantic-release
         run: |
           export PATH=$PATH:$(yarn global bin)
           yarn global add semantic-release@17.2.4
-          semantic-release -d
+          semantic-release
 
   release-build-version:
     runs-on: windows-latest

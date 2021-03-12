@@ -10,8 +10,9 @@ namespace Casbin.AspNetCore.Authorization
         public string? DefaultModelPath { get; set; }
         public string? DefaultPolicyPath { get; set; }
         public Func<IServiceProvider, Model?, Enforcer>? DefaultEnforcerFactory { get; set; }
-        public string PreferSubClaimType { get; set; } = ClaimTypes.NameIdentifier;
+        public string? DefaultAuthenticationSchemes { get; set; }
         public IRequestTransformer? DefaultRequestTransformer { get; set; }
+        public string PreferSubClaimType { get; set; } = ClaimTypes.NameIdentifier;
         public bool AllowAnyone { get; set; } = false;
     }
 }

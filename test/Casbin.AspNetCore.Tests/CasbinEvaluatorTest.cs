@@ -7,7 +7,6 @@ using Casbin.AspNetCore.Tests.Extensions;
 using Casbin.AspNetCore.Tests.Fixtures;
 using Casbin.AspNetCore.Tests.Utilities;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -16,14 +15,14 @@ namespace Casbin.AspNetCore.Tests
     public class CasbinEvaluatorTest : IClassFixture<TestServerFixture>
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly ICasbinPolicyCreator _casbinPolicyCreator;
+        private readonly ICasbinAuthorizationPolicyProvider _casbinPolicyCreator;
         private readonly ICasbinAuthorizationContextFactory _casbinAuthorizationContextFactory;
         private const string s_defaultScheme = "context.User";
 
         public CasbinEvaluatorTest(TestServerFixture testServerFixture)
         {
             _serviceProvider = testServerFixture.TestServer.Services;
-            _casbinPolicyCreator = _serviceProvider.GetRequiredService<ICasbinPolicyCreator>();
+            _casbinPolicyCreator = _serviceProvider.GetRequiredService<ICasbinAuthorizationPolicyProvider>();
             _casbinAuthorizationContextFactory = _serviceProvider.GetRequiredService<ICasbinAuthorizationContextFactory>();
         }
 
@@ -47,7 +46,7 @@ namespace Casbin.AspNetCore.Tests
             var casbinEvaluator = _serviceProvider.GetRequiredService<ICasbinEvaluator>();
             var casbinContext = _casbinAuthorizationContextFactory.CreateContext(
                 new CasbinAuthorizeAttribute(resource, action), httpContext);
-            var policy = _casbinPolicyCreator.Create(casbinContext.AuthorizationData);
+            var policy = _casbinPolicyCreator.GetAuthorizationPolicy(casbinContext.AuthorizationData);
             var result = AuthenticateResult.Success(new AuthenticationTicket(httpContext.User, s_defaultScheme));
 
             // Act
@@ -80,7 +79,7 @@ namespace Casbin.AspNetCore.Tests
             var casbinEvaluator = _serviceProvider.GetRequiredService<ICasbinEvaluator>();
             var casbinContext = _casbinAuthorizationContextFactory.CreateContext(
                 new CasbinAuthorizeAttribute(resource, action) { Issuer = testIssuer }, httpContext);
-            var policy = _casbinPolicyCreator.Create(casbinContext.AuthorizationData);
+            var policy = _casbinPolicyCreator.GetAuthorizationPolicy(casbinContext.AuthorizationData);
             var result = AuthenticateResult.Success(new AuthenticationTicket(httpContext.User, s_defaultScheme));
 
             // Act
@@ -112,7 +111,7 @@ namespace Casbin.AspNetCore.Tests
             var casbinContext = _casbinAuthorizationContextFactory.CreateContext(
                 new CasbinAuthorizeAttribute(resource, action) { PreferSubClaimType = testClaimType },
                 httpContext);
-            var policy = _casbinPolicyCreator.Create(casbinContext.AuthorizationData);
+            var policy = _casbinPolicyCreator.GetAuthorizationPolicy(casbinContext.AuthorizationData);
             var result = AuthenticateResult.Success(new AuthenticationTicket(httpContext.User, s_defaultScheme));
 
             // Act
