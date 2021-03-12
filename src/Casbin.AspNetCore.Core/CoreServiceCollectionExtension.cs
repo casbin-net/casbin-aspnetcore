@@ -52,6 +52,8 @@ namespace Casbin.AspNetCore.Authorization
             services.TryAddSingleton<IRequestTransformersCache, RequestTransformersCache>();
             services.AddScoped<IAuthorizationHandler, CasbinAuthorizationHandler>();
             services.AddSingleton<IRequestTransformer, BasicRequestTransformer>();
+            services.AddSingleton<IRequestTransformer, RbacRequestTransformer>();
+            services.AddSingleton<IRequestTransformer, KeyMatchRequestTransformer>();
             services.AddAuthorizationCore();
             return services;
         }
