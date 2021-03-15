@@ -1,49 +1,77 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
+using Microsoft.JSInterop;
 
 namespace Casbin.AspNetCore.Authorization.Policy
 {
-    public class CasbinPolicyCreator : ICasbinPolicyCreator
+    public class DefaultCasbinAuthorizationPolicyProvider : ICasbinAuthorizationPolicyProvider
     {
-        public CasbinPolicyCreator()
+        public DefaultCasbinAuthorizationPolicyProvider(IOptions<CasbinAuthorizationOptions> options)
         {
-            _emptyPolicy = new AuthorizationPolicy(_casbinAuthorizationRequirements, Array.Empty<string>());
+            if (options is null)
+            {
+                throw new NullReferenceException(nameof(options));
+            }
+
+            string? defaultAuthenticationSchemes = options.Value.DefaultAuthenticationSchemes;
+            ICollection<string> authenticationSchemes = new List<string>();
+            if (defaultAuthenticationSchemes is not null)
+            {
+                AddAuthenticationSchemes(authenticationSchemes, defaultAuthenticationSchemes);
+            }
+            _defaultPolicy = new AuthorizationPolicy(_casbinAuthorizationRequirements, authenticationSchemes);
         }
 
         private readonly IEnumerable<IAuthorizationRequirement> _casbinAuthorizationRequirements =
-            new []{CasbinAuthorizationRequirement.Requirement};
+            new[] { CasbinAuthorizationRequirement.Requirement };
 
-        private readonly AuthorizationPolicy _emptyPolicy;
+        private readonly AuthorizationPolicy _defaultPolicy;
 
-        public AuthorizationPolicy Create(IEnumerable<ICasbinAuthorizationData> authorizationData)
+        public AuthorizationPolicy GetAuthorizationPolicy(IEnumerable<ICasbinAuthorizationData> authorizationData)
         {
             if (authorizationData is null)
             {
                 throw new ArgumentNullException(nameof(authorizationData));
             }
 
-            IList<string>? authenticationSchemes = null;
+            ICollection<string>? authenticationSchemes = null;
             foreach (var data in authorizationData)
             {
-                string[]? authTypesSplit = data.AuthenticationSchemes?.Split(',');
-                if (authTypesSplit is null || authTypesSplit.Length > 0 is false)
+                if (string.IsNullOrWhiteSpace(data.AuthenticationSchemes))
                 {
-                    return _emptyPolicy;
+                    continue;
                 }
 
-                authenticationSchemes ??= new List<string>();
+                authenticationSchemes = _defaultPolicy.AuthenticationSchemes as ICollection<string> ??
+                                        _defaultPolicy.AuthenticationSchemes.ToList();
 
-                foreach (var authType in authTypesSplit)
-                {
-                    if (string.IsNullOrWhiteSpace(authType) is false)
-                    {
-                        authenticationSchemes.Add(authType.Trim());
-                    }
-                }
+                AddAuthenticationSchemes(authenticationSchemes, data.AuthenticationSchemes);
             }
 
-            return authenticationSchemes is null ? _emptyPolicy : new AuthorizationPolicy(_casbinAuthorizationRequirements, authenticationSchemes);
+            return authenticationSchemes is not null
+                    ? new AuthorizationPolicy(_casbinAuthorizationRequirements, authenticationSchemes)
+                    : _defaultPolicy;
+        }
+
+        private static void AddAuthenticationSchemes(ICollection<string> authenticationSchemes,
+            string authenticationSchemesString)
+        {
+            string[] authTypesSplit = authenticationSchemesString.Split(',');
+            if (authTypesSplit.Length == 0)
+            {
+                return;
+            }
+
+            foreach (var authType in authTypesSplit)
+            {
+                if (string.IsNullOrWhiteSpace(authType) is false)
+                {
+                    authenticationSchemes.Add(authType.Trim());
+                }
+            }
         }
     }
 }

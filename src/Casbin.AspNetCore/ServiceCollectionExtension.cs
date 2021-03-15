@@ -30,7 +30,7 @@ namespace Casbin.AspNetCore.Authorization
             ServiceLifetime defaultModelProviderLifeTime = ServiceLifetime.Scoped)
         {
             services.TryAddTransient<ICasbinEvaluator, CasbinEvaluator>();
-            services.TryAddSingleton<ICasbinPolicyCreator, CasbinPolicyCreator>();
+            services.TryAddSingleton<ICasbinAuthorizationPolicyProvider, DefaultCasbinAuthorizationPolicyProvider>();
             services.TryAddSingleton<ICasbinAuthorizationMiddlewareResultHandler, CasbinAuthorizationMiddlewareResultHandler>();
             services.AddCasbinAuthorizationCore(configureOptions, defaultEnforcerProviderLifeTime, defaultModelProviderLifeTime);
             return services;

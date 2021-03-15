@@ -25,7 +25,7 @@ namespace Casbin.AspNetCore.Authorization
 
         private static void VerifyServicesRegistered(IApplicationBuilder app)
         {
-            if (app.ApplicationServices.GetService(typeof(ICasbinPolicyCreator)) == null)
+            if (app.ApplicationServices.GetService(typeof(ICasbinAuthorizationPolicyProvider)) == null)
             {
                 throw new InvalidOperationException($"Unable to find the required services. Please add all the required services by calling '{nameof(IServiceCollection)}.{nameof(ServiceCollectionExtension.AddCasbinAuthorization)}' inside the call to 'ConfigureServices(...)' in the application startup code.");
             }

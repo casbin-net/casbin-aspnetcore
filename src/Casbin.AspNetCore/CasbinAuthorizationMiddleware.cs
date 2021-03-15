@@ -15,10 +15,10 @@ namespace Casbin.AspNetCore.Authorization
         private static readonly object s_casbinAuthorizationMiddlewareWithEndpointInvokedValue = new();
 
         private readonly RequestDelegate _next;
-        private readonly ICasbinPolicyCreator _policyCreator;
+        private readonly ICasbinAuthorizationPolicyProvider _policyCreator;
         private readonly IOptions<CasbinAuthorizationOptions> _options;
 
-        public CasbinAuthorizationMiddleware(RequestDelegate next, ICasbinPolicyCreator policyCreator, IOptions<CasbinAuthorizationOptions> options)
+        public CasbinAuthorizationMiddleware(RequestDelegate next, ICasbinAuthorizationPolicyProvider policyCreator, IOptions<CasbinAuthorizationOptions> options)
         {
             _next = next ?? throw new ArgumentNullException(nameof(next));
             _policyCreator = policyCreator ?? throw new ArgumentNullException(nameof(policyCreator));
@@ -48,7 +48,7 @@ namespace Casbin.AspNetCore.Authorization
             }
 
             bool allowAnyone = _options.Value.AllowAnyone;
-            var policy = _policyCreator.Create(authorizeData);
+            var policy = _policyCreator.GetAuthorizationPolicy(authorizeData);
 
             AuthenticateResult? authenticateResult = null;
             if (allowAnyone is false)
