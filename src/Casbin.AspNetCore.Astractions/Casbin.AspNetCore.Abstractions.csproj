@@ -24,4 +24,8 @@
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\..\assets\casbin.png" Pack="true" Visible="false" PackagePath="" />
+  </ItemGroup>
+
 </Project>

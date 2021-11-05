@@ -21,4 +21,8 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="..\..\assets\casbin.png" Pack="true" Visible="false" PackagePath="" />
+  </ItemGroup>
+
 </Project>
