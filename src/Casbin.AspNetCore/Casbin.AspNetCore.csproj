@@ -28,4 +28,8 @@
     <ProjectReference Include="..\Casbin.AspNetCore.Core\Casbin.AspNetCore.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\..\assets\casbin.png" Pack="true" Visible="false" PackagePath="" />
+  </ItemGroup>
+
 </Project>

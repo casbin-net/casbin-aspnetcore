@@ -31,4 +31,8 @@
     <ProjectReference Include="..\Casbin.AspNetCore.Astractions\Casbin.AspNetCore.Abstractions.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\..\assets\casbin.png" Pack="true" Visible="false" PackagePath="" />
+  </ItemGroup>
+
 </Project>
