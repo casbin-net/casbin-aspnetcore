@@ -1,4 +1,6 @@
-﻿namespace Casbin.AspNetCore.Authorization
+﻿using Casbin.Model;
+
+namespace Casbin.AspNetCore.Authorization
 {
     public interface ICasbinModelProvider
     {

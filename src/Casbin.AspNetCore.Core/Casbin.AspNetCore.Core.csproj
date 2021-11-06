@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Casbin.NET" Version="2.0.0-preview.1" />
+    <PackageReference Include="Casbin.NET" Version="1.11.0-build.99.preview.5295db5" />
   </ItemGroup>
 
   <ItemGroup>

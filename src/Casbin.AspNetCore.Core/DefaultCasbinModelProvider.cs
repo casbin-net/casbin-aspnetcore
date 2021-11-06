@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using Microsoft.Extensions.Options;
-using Casbin;
 using Casbin.Model;
 
 namespace Casbin.AspNetCore.Authorization

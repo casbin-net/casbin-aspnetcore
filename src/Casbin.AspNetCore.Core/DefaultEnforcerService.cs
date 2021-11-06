@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Casbin.AspNetCore.Authorization.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Casbin.Extensions;
 
 namespace Casbin.AspNetCore.Authorization
 {

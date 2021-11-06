@@ -27,7 +27,7 @@ namespace Casbin.AspNetCore.Authorization
         public static IServiceCollection AddCasbinAuthorization(this IServiceCollection services,
             Action<CasbinAuthorizationOptions>? configureOptions = default,
             ServiceLifetime defaultEnforcerProviderLifeTime = ServiceLifetime.Scoped,
-            ServiceLifetime defaultModelProviderLifeTime = ServiceLifetime.Scoped)
+            ServiceLifetime defaultModelProviderLifeTime = ServiceLifetime.Singleton)
         {
             services.TryAddTransient<ICasbinEvaluator, CasbinEvaluator>();
             services.TryAddSingleton<ICasbinAuthorizationPolicyProvider, DefaultCasbinAuthorizationPolicyProvider>();

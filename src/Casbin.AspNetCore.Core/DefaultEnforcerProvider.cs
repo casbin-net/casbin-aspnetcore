@@ -2,9 +2,9 @@
 using System.IO;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Casbin;
 using Casbin.Model;
 using Casbin.Adapter.File;
+using Casbin.Persist;
 
 namespace Casbin.AspNetCore.Authorization
 {
@@ -13,7 +13,7 @@ namespace Casbin.AspNetCore.Authorization
         private readonly IServiceProvider _serviceProvider;
         private readonly IOptions<CasbinAuthorizationOptions> _options;
         private readonly ICasbinModelProvider _modelProvider;
-        private Enforcer? _enforcer;
+        private IEnforcer? _enforcer;
 
         public DefaultEnforcerProvider(IServiceProvider serviceProvider, IOptions<CasbinAuthorizationOptions> options,
             ICasbinModelProvider modelProvider)
@@ -23,7 +23,7 @@ namespace Casbin.AspNetCore.Authorization
             _modelProvider = modelProvider ?? throw new ArgumentNullException(nameof(modelProvider));
         }
 
-        public virtual Enforcer? GetEnforcer()
+        public virtual IEnforcer? GetEnforcer()
         {
             if (_enforcer is not null)
             {
@@ -43,6 +43,20 @@ namespace Casbin.AspNetCore.Authorization
                 throw new ArgumentException($"GetModel method of {nameof(ICasbinModelProvider)} can not return null when {nameof(_options.Value.DefaultEnforcerFactory)} option is empty");
             }
 
+            if (_options.Value.DefaultEnforcerFactory is not null)
+            {
+                using IServiceScope scope = _serviceProvider.CreateScope();
+                _enforcer ??= _options.Value.DefaultEnforcerFactory(scope.ServiceProvider, _modelProvider.GetModel());
+                return _enforcer;
+            }
+
+            IAdapter? adapter = _serviceProvider.GetService<IAdapter>();
+            if (adapter != null)
+            {
+                _enforcer ??= SyncedEnforcer.Create(model, adapter, true);
+                return _enforcer;
+            }
+
             string? policyPath = _options.Value.DefaultPolicyPath;
             if (policyPath is not null)
             {
@@ -50,11 +64,11 @@ namespace Casbin.AspNetCore.Authorization
                 {
                     throw new FileNotFoundException("Can not find the policy file path.", policyPath);
                 }
-                _enforcer ??= new Enforcer(_modelProvider.GetModel(), new FileAdapter(policyPath));
+                _enforcer ??= SyncedEnforcer.Create(model, new FileAdapter(policyPath), true);
                 return _enforcer;
             }
 
-            _enforcer ??= new Enforcer(_modelProvider.GetModel());
+            _enforcer ??= SyncedEnforcer.Create(model);
             return _enforcer;
         }
     }
