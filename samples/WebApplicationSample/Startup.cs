@@ -43,7 +43,8 @@ namespace WebApplicationSample
                 options.DefaultPolicyPath = Path.Combine("CasbinConfigs", "basic_policy.csv");
 
                 // Comment line below to use the default BasicRequestTransformer
-                // Note: Commenting the line means that the action methods MUST have [CasbinAuthorize()] attribute which explicitly specifies obj and policy. Otherwise authorization will be denied
+                // Note: Commenting the line means that the action methods MUST have [CasbinAuthorize()] attribute which explicitly specifies object and action.
+                // Otherwise authorization will be denied
                 options.DefaultRequestTransformer = new KeyMatchRequestTransformer();
             });
         }
@@ -64,12 +65,12 @@ namespace WebApplicationSample
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
-
-            //If you
             app.UseAuthentication();
 
-
+            // this is for casbin authorization.
             app.UseCasbinAuthorization();
+
+            // You can add this to support official authorization too.
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

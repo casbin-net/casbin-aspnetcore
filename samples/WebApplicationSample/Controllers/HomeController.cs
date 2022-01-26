@@ -22,13 +22,6 @@ namespace WebApplicationSample.Controllers
             return View();
         }
 
-        [HttpGet("attribtest")]
-        [CasbinAuthorize]
-        public IActionResult AttribRouteTest(string tenantId)
-        {
-            return View();
-        }
-
         [CasbinAuthorize(nameof(BasicTest), nameof(HttpMethod.Get))]
         public IActionResult BasicTest()
         {
