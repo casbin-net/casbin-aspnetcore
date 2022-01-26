@@ -11,7 +11,7 @@ namespace Casbin.AspNetCore.Authorization
 {
     public class CasbinAuthorizationMiddleware
     {
-        private const string s_casbinAuthorizationMiddlewareInvokedWithEndpointKey = "__CasbinAuthorizationMiddlewareWithEndpointInvoked";
+        private readonly string s_casbinAuthorizationMiddlewareInvokedWithEndpointKey = "__CasbinAuthorizationMiddlewareWithEndpointInvoked";
         private static readonly object s_casbinAuthorizationMiddlewareWithEndpointInvokedValue = new();
 
         private readonly RequestDelegate _next;

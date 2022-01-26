@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Casbin.AspNetCore.Astractions\Casbin.AspNetCore.Abstractions.csproj" />
+    <ProjectReference Include="..\Casbin.AspNetCore.Abstractions\Casbin.AspNetCore.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

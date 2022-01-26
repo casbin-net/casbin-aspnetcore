@@ -11,7 +11,7 @@ namespace Casbin.AspNetCore.Authorization.Transformers
             requestValues[0] = SubTransform(context, data);
 
             requestValues[1] = ObjTransform(context, data, (c, _) =>
-                    c.HttpContext.Request.Path);
+                    c.HttpContext.Request.Path.Value ?? string.Empty);
             requestValues[2] = ActTransform(context, data, (c, _) =>
                     c.HttpContext.Request.Method);
             return new ValueTask<IEnumerable<object>>(requestValues);

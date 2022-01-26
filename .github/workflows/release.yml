@@ -143,7 +143,7 @@ jobs:
       run: dotnet nuget push .\packages\*.nupkg -s myget.org -k $env:MYGET_API_TOKEN --skip-duplicate
 
     - name: Add github nuget source
-      run: dotnet nuget add source https://nuget.pkg.github.com/casbin/index.json --name github.com --username casbin --password $env:GITHUB_TOKEN
+      run: dotnet nuget add source https://nuget.pkg.github.com/casbin-net/index.json --name github.com --username casbin-net --password $env:GITHUB_TOKEN
 
     - name: Push packages to github.com
       run: dotnet nuget push .\packages\*.nupkg -s github.com --skip-duplicate;
