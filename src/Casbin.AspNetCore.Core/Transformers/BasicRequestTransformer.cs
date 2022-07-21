@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Casbin.Model;
+using Casbin.AspNetCore.Authorization.Extensions;
 
 namespace Casbin.AspNetCore.Authorization.Transformers
 {
@@ -11,19 +12,21 @@ namespace Casbin.AspNetCore.Authorization.Transformers
     {
         public override string PreferSubClaimType { get; set; } = ClaimTypes.NameIdentifier;
 
-        public override ValueTask<IEnumerable<object>> TransformAsync(ICasbinAuthorizationContext context, ICasbinAuthorizationData data)
+        public override ValueTask<IRequestValues> TransformAsync(ICasbinAuthorizationContext context, IRequestValues data)
         {
-            object[] requestValues = new object[data.ValueCount + 1];
-            requestValues[0] = SubTransform(context, data);
+            if(data.Count < 2)
+            {
+                throw new ArgumentException("Cannot find enough values for obj and act.");
+            }
 
-            requestValues[1] = ObjTransform(context, data,
-                (_, d) => d.Value1);
-            requestValues[2] = ActTransform(context, data,
-                (_, d) => d.Value2);
-            return new ValueTask<IEnumerable<object>>(requestValues);
+            var sub = SubTransform(context, data);
+            var obj = ObjTransform(context, data, (_, d) => d[0]);
+            var act = ActTransform(context, data, (_, d) => d[1]);
+
+            return new ValueTask<IRequestValues>(Request.Create<string, string, string>(sub, obj, act));
         }
 
-        protected virtual string SubTransform(ICasbinAuthorizationContext context, ICasbinAuthorizationData data)
+        protected virtual string SubTransform(ICasbinAuthorizationContext context, IRequestValues data)
         {
             HttpContext httpContext = context.HttpContext;
             Claim? claim;
@@ -38,11 +41,12 @@ namespace Casbin.AspNetCore.Authorization.Transformers
             return claim is null ? string.Empty : claim.Value;
         }
 
-        protected virtual string ObjTransform(ICasbinAuthorizationContext context, ICasbinAuthorizationData data,
-            Func<ICasbinAuthorizationContext, ICasbinAuthorizationData, string> valueSelector)
+        protected virtual string ObjTransform(ICasbinAuthorizationContext context, IRequestValues data,
+            Func<ICasbinAuthorizationContext, IRequestValues, string> valueSelector)
             => valueSelector(context, data);
 
-        protected virtual string ActTransform(ICasbinAuthorizationContext context, ICasbinAuthorizationData data, Func<ICasbinAuthorizationContext, ICasbinAuthorizationData, string> valueSelector)
+        protected virtual string ActTransform(ICasbinAuthorizationContext context, IRequestValues data, 
+            Func<ICasbinAuthorizationContext, IRequestValues, string> valueSelector)
             => valueSelector(context, data);
     }
 }

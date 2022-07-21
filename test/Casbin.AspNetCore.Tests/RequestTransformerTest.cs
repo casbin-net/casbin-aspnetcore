@@ -6,6 +6,7 @@ using Casbin.AspNetCore.Authorization;
 using Casbin.AspNetCore.Authorization.Transformers;
 using Casbin.AspNetCore.Tests.Extensions;
 using Casbin.AspNetCore.Tests.Utilities;
+using Casbin.Model;
 using Xunit;
 
 namespace Casbin.AspNetCore.Tests
@@ -43,7 +44,7 @@ namespace Casbin.AspNetCore.Tests
                 new CasbinAuthorizeAttribute(resource, action), httpContext);
 
             // Act
-            object[] requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
+            IRequestValues requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First().Values));
 
             // Assert
             Assert.Equal(userNameExpected, requestValues[0]);
@@ -84,7 +85,7 @@ namespace Casbin.AspNetCore.Tests
                 new CasbinAuthorizeAttribute(resource, action), httpContext);
 
             // Act
-            object[] requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
+            IRequestValues requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First().Values));
 
             // Assert
             Assert.Equal(userNameExpected, requestValues[0]);
@@ -126,7 +127,7 @@ namespace Casbin.AspNetCore.Tests
                 new CasbinAuthorizeAttribute(resource, action), httpContext);
 
             // Act
-            object[] requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
+            IRequestValues requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First().Values));
 
             // Assert
             Assert.Equal(userNameExpected, requestValues[0]);
@@ -167,7 +168,7 @@ namespace Casbin.AspNetCore.Tests
                 new CasbinAuthorizeAttribute(resource, action), httpContext);
 
             // Act
-            object[] requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
+            IRequestValues requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First().Values));
 
             // Assert
             Assert.Equal(userNameExpected, requestValues[0]);
@@ -208,7 +209,7 @@ namespace Casbin.AspNetCore.Tests
                 new CasbinAuthorizeAttribute(resource, action), httpContext);
 
             // Act
-            object[] requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
+            IRequestValues requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First().Values));
 
             // Assert
             Assert.Equal(userNameExpected, requestValues[0]);
@@ -251,7 +252,7 @@ namespace Casbin.AspNetCore.Tests
                 new CasbinAuthorizeAttribute(resource, action), httpContext);
 
             // Act
-            object[] requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
+            IRequestValues requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First().Values));
 
             // Assert
             Assert.Equal(userNameExpected, requestValues[0]);

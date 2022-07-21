@@ -1,7 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Linq;
+using Casbin.Model;
+using Casbin.AspNetCore.Authorization.Extensions;
 
 namespace Casbin.AspNetCore.Authorization.Transformers
 {
@@ -9,33 +11,44 @@ namespace Casbin.AspNetCore.Authorization.Transformers
     {
         public override string PreferSubClaimType { get; set; } = ClaimTypes.Role;
 
-        public override ValueTask<IEnumerable<object>> TransformAsync(ICasbinAuthorizationContext context, ICasbinAuthorizationData data)
+        public override ValueTask<IRequestValues> TransformAsync(ICasbinAuthorizationContext context, IRequestValues data)
         {
-            object[] requestValues = new object[data.ValueCount + 1];
-            requestValues[0] = SubTransform(context, data);
+            var sub = SubTransform(context, data);
 
-            switch (requestValues.Length)
+            if(data.Count == 3)
             {
-                case 3:
-                    requestValues[1] = ObjTransform(context, data,
-                        (_, d) => d.Value1);
-                    requestValues[2] = ActTransform(context, data,
-                        (_, d) => d.Value2);
-                    break;
-                case 4:
-                    requestValues[1] = DomTransform(context, data,
-                        (_, d) => d.Value1);
-                    requestValues[2] = ObjTransform(context, data,
-                        (_, d) => d.Value2);
-                    requestValues[3] = ActTransform(context, data,
-                        (_, d) => d.Value3);
-                    break;
+                if(data.Count < 2)
+                {
+                    throw new ArgumentException("Cannot find enough values for obj and act.");
+                }
+                var obj = ObjTransform(context, data,
+                    (_, d) => d[0]);
+                var act = ActTransform(context, data,
+                    (_, d) => d[1]);
+                return new ValueTask<IRequestValues>(Request.Create<string, string, string>(sub, obj, act));
             }
-
-            return new ValueTask<IEnumerable<object>>(requestValues);
+            else if(data.Count == 4)
+            {
+                if(data.Count < 3)
+                {
+                    throw new ArgumentException("Cannot find enough values for obj and act.");
+                }
+                var dom = DomTransform(context, data,
+                    (_, d) => d[0]);
+                var obj = ObjTransform(context, data,
+                    (_, d) => d[1]);
+                var act = ActTransform(context, data,
+                    (_, d) => d[2]);
+                return new ValueTask<IRequestValues>(Request.Create<string, string, string, string>(sub, dom, obj, act));
+            }
+            else
+            {
+                throw new ArgumentException("Invalid built-in value count for rbac model.");
+            }
         }
 
-        protected virtual string DomTransform(ICasbinAuthorizationContext context, ICasbinAuthorizationData data, Func<ICasbinAuthorizationContext, ICasbinAuthorizationData, string> valueSelector)
+        protected virtual string DomTransform(ICasbinAuthorizationContext context, IRequestValues data, 
+            Func<ICasbinAuthorizationContext, IRequestValues, string> valueSelector)
         {
             return valueSelector(context, data);
         }
