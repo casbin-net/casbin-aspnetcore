@@ -36,6 +36,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Casbin.AspNetCore.Performan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Casbin.AspNetCore.Abstractions", "src\Casbin.AspNetCore.Astractions\Casbin.AspNetCore.Abstractions.csproj", "{C6A00589-D105-452E-ADAC-16F19B2B3B2D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{1DF72011-C54E-4D02-88C6-B741563D8B58}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Casbin.AspNetCore.LoadTest", "test\Casbin.AspNetCore.LoadTest\Casbin.AspNetCore.LoadTest.csproj", "{C9118A13-CF67-449D-9168-421A1BEE11A0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,6 +74,10 @@ Global
 		{C6A00589-D105-452E-ADAC-16F19B2B3B2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6A00589-D105-452E-ADAC-16F19B2B3B2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6A00589-D105-452E-ADAC-16F19B2B3B2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9118A13-CF67-449D-9168-421A1BEE11A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9118A13-CF67-449D-9168-421A1BEE11A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9118A13-CF67-449D-9168-421A1BEE11A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9118A13-CF67-449D-9168-421A1BEE11A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -82,6 +90,7 @@ Global
 		{D28D5C8B-87BC-4BB4-8EE3-4266195F02B3} = {E8E8CE11-04F7-4F61-B5CF-F58852E8052B}
 		{82166036-4E1D-44EA-B6C2-190C5BD4EBFB} = {E8E8CE11-04F7-4F61-B5CF-F58852E8052B}
 		{C6A00589-D105-452E-ADAC-16F19B2B3B2D} = {B3DE00B2-3985-40B5-AFCF-4466733B9A35}
+		{C9118A13-CF67-449D-9168-421A1BEE11A0} = {1DF72011-C54E-4D02-88C6-B741563D8B58}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2A11ADB2-E18C-492D-B72E-F718510D5E6F}
