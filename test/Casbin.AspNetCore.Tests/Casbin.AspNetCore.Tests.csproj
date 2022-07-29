@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net6;netcoreapp3.1</TargetFrameworks>
     <DebugType>full</DebugType>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -24,11 +24,11 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.1.16" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.1.27" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net5'">
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="5.0.7" />
+  <ItemGroup Condition="'$(TargetFramework)' == 'net6'">
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="6.0.7" />
   </ItemGroup>
 
   <ItemGroup>
