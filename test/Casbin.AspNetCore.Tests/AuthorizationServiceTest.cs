@@ -6,6 +6,7 @@ using Casbin.AspNetCore.Authorization.Policy;
 using Casbin.AspNetCore.Tests.Extensions;
 using Casbin.AspNetCore.Tests.Fixtures;
 using Casbin.AspNetCore.Tests.Utilities;
+using Casbin.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,14 +17,14 @@ namespace Casbin.AspNetCore.Tests
     public class AuthorizationServiceTest : IClassFixture<TestServerFixture>
     {
         private readonly IAuthorizationService _authorizationService;
-        private readonly ICasbinAuthorizationContextFactory _casbinAuthorizationContextFactory;
+        private readonly ICasbinAuthorizationContextFactory<RequestValues<string, string, string, string, string>> _casbinAuthorizationContextFactory;
         private readonly CasbinAuthorizationRequirement _requirement = new CasbinAuthorizationRequirement();
 
         public AuthorizationServiceTest(TestServerFixture servicesFixture)
         {
             var services = servicesFixture.TestServer.Services;
             _authorizationService = services.GetRequiredService<IAuthorizationService>();
-            _casbinAuthorizationContextFactory = services.GetRequiredService<ICasbinAuthorizationContextFactory>();
+            _casbinAuthorizationContextFactory = services.GetRequiredService<ICasbinAuthorizationContextFactory<RequestValues<string, string, string, string, string>>>();
         }
 
         public static IEnumerable<object[]> BasicTestData = new[]
@@ -76,7 +77,9 @@ namespace Casbin.AspNetCore.Tests
 
             // Act
             var casbinContext = _casbinAuthorizationContextFactory.CreateContext(
-                new CasbinAuthorizeAttribute(resource, action) { Issuer = testIssuer }, httpContext);
+                new CasbinAuthorizeAttribute(resource, action)
+                    { Issuer = testIssuer },
+                httpContext);
             var result = await _authorizationService
                 .AuthorizeAsync(httpContext.User, casbinContext, _requirement);
 
@@ -105,8 +108,10 @@ namespace Casbin.AspNetCore.Tests
 
             // Assert
             var casbinContext = _casbinAuthorizationContextFactory.CreateContext(
-                new CasbinAuthorizeAttribute(resource, action) { PreferSubClaimType = testClaimType },
-                httpContext);
+            new CasbinAuthorizeAttribute(resource, action)
+                { PreferSubClaimType = testClaimType },
+            httpContext);
+
             var result = await _authorizationService
                 .AuthorizeAsync(httpContext.User, casbinContext, _requirement);
 

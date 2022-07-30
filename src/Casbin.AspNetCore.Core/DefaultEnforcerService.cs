@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Casbin.AspNetCore.Authorization.Extensions;
+using Casbin.Model;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Casbin.Extensions;
 
 namespace Casbin.AspNetCore.Authorization
 {
@@ -27,12 +27,13 @@ namespace Casbin.AspNetCore.Authorization
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public virtual async Task<bool> EnforceAsync(ICasbinAuthorizationContext context)
+        public virtual async Task<bool> EnforceAsync<TRequest>(ICasbinAuthorizationContext<TRequest> context)
+            where TRequest : IRequestValues
         {
             var enforcer = _enforcerProvider.GetEnforcer();
             if (enforcer is null)
             {
-                throw new ArgumentException("Can not find any enforcer.");
+                throw new ArgumentException("Cannot find any enforcer.");
             }
 
             var transformersArray =
@@ -42,7 +43,7 @@ namespace Casbin.AspNetCore.Authorization
             bool noDefault = _options.Value.DefaultRequestTransformer is null;
             if (transformersArray is null || transformersArray.Length == 0 && noDefault)
             {
-                throw new ArgumentException("Can find any request transformer.");
+                throw new ArgumentException("Cannot find any request transformer.");
             }
 
             foreach (var data in context.AuthorizationData)
@@ -59,7 +60,7 @@ namespace Casbin.AspNetCore.Authorization
 
                     if (transformer is null)
                     {
-                        throw new ArgumentException("Can find any specified type request transformer.", nameof(data.RequestTransformerType));
+                        throw new ArgumentException("Cannot find any specified type request transformer.", nameof(data.RequestTransformerType));
                     }
                 }
                 else if (!noDefault)
@@ -71,7 +72,7 @@ namespace Casbin.AspNetCore.Authorization
 
                 if (transformer is null)
                 {
-                    throw new ArgumentException("Can find any request transformer.", nameof(_transformersCache.Transformers));
+                    throw new ArgumentException("Cannot find any request transformer.", nameof(transformer));
                 }
 
                 // The order of deciding transformer.PreferSubClaimType is :
@@ -84,9 +85,12 @@ namespace Casbin.AspNetCore.Authorization
                 // 2. null (if this issuer is null, it will be ignored)
                 transformer.Issuer = data.Issuer;
 
-                var requestValues = await transformer.TransformAsync(context, data);
-
-                if (await enforcer.EnforceAsync(requestValues as object[] ?? requestValues.ToArray()))
+                if(data.Values is null)
+                {
+                    throw new ArgumentException("Cannot find any request value.");
+                }
+                TRequest values = await transformer.TransformAsync(context, data);
+                if(await enforcer.EnforceAsync(enforcer.CreateContext(), values))
                 {
                     _logger.CasbinAuthorizationSucceeded();
                     continue;

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Casbin.Model;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Casbin.AspNetCore.Authorization.Policy
 {
-    public class CasbinAuthorizationHandler : AuthorizationHandler<CasbinAuthorizationRequirement, ICasbinAuthorizationContext>
+    public class CasbinAuthorizationHandler<TRequest> : AuthorizationHandler<CasbinAuthorizationRequirement, ICasbinAuthorizationContext<TRequest>>
+        where TRequest : IRequestValues
     {
         private readonly IEnforceService _enforcerService;
 
@@ -14,7 +16,7 @@ namespace Casbin.AspNetCore.Authorization.Policy
         }
 
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, CasbinAuthorizationRequirement requirement,
-            ICasbinAuthorizationContext casbinContext)
+            ICasbinAuthorizationContext<TRequest> casbinContext)
         {
             if (await _enforcerService.EnforceAsync(casbinContext))
             {

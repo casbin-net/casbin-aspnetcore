@@ -4,7 +4,7 @@
     <TargetFrameworks>net6;netcoreapp3.1;</TargetFrameworks>
     <Nullable>enable</Nullable>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>Preview</LangVersion>
     <RootNamespace>Casbin.AspNetCore.Authorization</RootNamespace>
   </PropertyGroup>
 
@@ -21,10 +21,6 @@
 
   <ItemGroup>
     <None Remove="Casbin.AspNetCore.Core.csproj.DotSettings" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Casbin.NET" Version="1.11.0-build.99.preview.5295db5" />
   </ItemGroup>
 
   <ItemGroup>
