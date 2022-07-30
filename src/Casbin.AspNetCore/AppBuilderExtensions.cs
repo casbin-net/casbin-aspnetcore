@@ -14,7 +14,7 @@ namespace Casbin.AspNetCore.Authorization
         /// <returns>A reference to this instance after the operation has completed.</returns>
         public static IApplicationBuilder UseCasbinAuthorization(this IApplicationBuilder app)
         {
-            return app.UseMiddleware<CasbinAuthorizationMiddleware<RequestValues<string, string, string, string, string>>>();
+            return app.UseMiddleware<CasbinAuthorizationMiddleware<StringRequestValues>>();
         }
 
         /// <summary>

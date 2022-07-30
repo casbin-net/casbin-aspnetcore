@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Casbin.AspNetCore.Authorization.Extensions;
 using Casbin.Model;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -11,18 +12,18 @@ namespace Casbin.AspNetCore.Authorization
     public class DefaultEnforcerService : IEnforceService
     {
         private readonly IOptions<CasbinAuthorizationOptions> _options;
-        private readonly IRequestTransformersCache _transformersCache;
+        private readonly IServiceProvider _serviceProvider;
         private readonly IEnforcerProvider _enforcerProvider;
         private readonly ILogger<DefaultEnforcerService> _logger;
 
         public DefaultEnforcerService(
             IOptions<CasbinAuthorizationOptions> options,
-            IRequestTransformersCache transformersCache,
+            IServiceProvider serviceProvider,
             IEnforcerProvider enforcerProvider,
             ILogger<DefaultEnforcerService> logger)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
-            _transformersCache = transformersCache ?? throw new ArgumentNullException(nameof(transformersCache));
+            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             _enforcerProvider = enforcerProvider ?? throw new ArgumentNullException(nameof(enforcerProvider));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -36,43 +37,51 @@ namespace Casbin.AspNetCore.Authorization
                 throw new ArgumentException("Cannot find any enforcer.");
             }
 
-            var transformersArray =
-                _transformersCache.Transformers as IRequestTransformer[] ??
-                _transformersCache.Transformers?.ToArray();
-
-            bool noDefault = _options.Value.DefaultRequestTransformer is null;
-            if (transformersArray is null || transformersArray.Length == 0 && noDefault)
+            var transformersCache = _serviceProvider.GetService<IRequestTransformersCache<TRequest>>();
+            if (transformersCache is null)
             {
-                throw new ArgumentException("Cannot find any request transformer.");
+                throw new ArgumentException("Cannot find the specific request values type transformers cache.");
+            }
+            var transformers = transformersCache.Transformers;
+            bool noDefault = _options.Value.DefaultRequestTransformerType is null;
+            if (transformers is null || transformers.Count is 0 && noDefault)
+            {
+                throw new ArgumentException($"Cannot find the specific request values type request transformer.");
             }
 
             foreach (var data in context.AuthorizationData)
             {
                 // The order of decide transformer is :
                 // 1. context.Data.RequestTransformerType >
-                // 2. _options.Value.DefaultRequestTransformer >
+                // 2. _options.Value.DefaultRequestTransformerType >
                 // 3. _transformers.FirstOrDefault()
-                IRequestTransformer? transformer = null;
+                IRequestTransformer<TRequest>? transformer = null;
                 if (data.RequestTransformerType is not null)
                 {
-                    transformer = transformersArray.FirstOrDefault(t =>
-                        t.GetType() == data.RequestTransformerType);
-
-                    if (transformer is null)
+                    if (transformersCache.TryGetTransformer(data.RequestTransformerType, out transformer) is false)
                     {
-                        throw new ArgumentException("Cannot find any specified type request transformer.", nameof(data.RequestTransformerType));
+                        throw new ArgumentException($"Cannot find request transformer {data.RequestTransformerType}.");
                     }
                 }
-                else if (!noDefault)
+                else if (_options.Value.DefaultRequestTransformerType is not null)
                 {
-                    transformer = _options.Value.DefaultRequestTransformer;
+                    if (transformersCache.TryGetTransformer(_options.Value.DefaultRequestTransformerType, out transformer) is false)
+                    {
+                        throw new ArgumentException($"Cannot find request transformer {_options.Value.DefaultRequestTransformerType}.");
+                    }
                 }
-
-                transformer ??= transformersArray.FirstOrDefault();
+                else
+                {
+                    if (transformers.Count is not 1)
+                    {
+                        throw new ArgumentException("Cannot determine the exclusive request transformer.");
+                    }
+                    transformer = transformers[0];
+                }
 
                 if (transformer is null)
                 {
-                    throw new ArgumentException("Cannot find any request transformer.", nameof(transformer));
+                    throw new ArgumentException($"Cannot find the specific request values type request transformer.");
                 }
 
                 // The order of deciding transformer.PreferSubClaimType is :
@@ -80,8 +89,8 @@ namespace Casbin.AspNetCore.Authorization
                 // 2. _options.Value.PreferSubClaimType
                 transformer.PreferSubClaimType = data.PreferSubClaimType ?? _options.Value.PreferSubClaimType;
 
-                // The order of deciding transformer.PreferSubClaimType is :
-                // 1. context.Data.PreferSubClaimType >
+                // The order of deciding transformer.Issuer is :
+                // 1. context.Data.Issuer >
                 // 2. null (if this issuer is null, it will be ignored)
                 transformer.Issuer = data.Issuer;
 

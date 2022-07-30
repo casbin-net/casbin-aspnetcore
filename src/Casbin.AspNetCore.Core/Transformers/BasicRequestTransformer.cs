@@ -12,18 +12,17 @@ namespace Casbin.AspNetCore.Authorization.Transformers
     {
         public override string PreferSubClaimType { get; set; } = ClaimTypes.NameIdentifier;
 
-        public override ValueTask<TRequest> TransformAsync<TRequest>(ICasbinAuthorizationContext<TRequest> context,
-            ICasbinAuthorizationData<TRequest> data)
+        public override ValueTask<StringRequestValues> TransformAsync(
+            ICasbinAuthorizationContext<StringRequestValues> context,
+            ICasbinAuthorizationData<StringRequestValues> data)
         {
             ref var values = ref data.Values;
-            if (values is not RequestValues<string, string, string, string, string> v)
-            {
-                return new ValueTask<TRequest>(data.Values);
-            }
+            string? value1 = values.Value1;
+            string? value2 = values.Value2;
             values.TrySetValue(0, SubTransform(context, data));
-            values.TrySetValue(1, v.Value1);
-            values.TrySetValue(2, v.Value2);
-            return new ValueTask<TRequest>(data.Values);
+            values.TrySetValue(1, value1);
+            values.TrySetValue(2, value2);
+            return new ValueTask<StringRequestValues>(data.Values);
         }
 
         protected virtual string SubTransform<TRequest>(ICasbinAuthorizationContext<TRequest> context, ICasbinAuthorizationData<TRequest> data)

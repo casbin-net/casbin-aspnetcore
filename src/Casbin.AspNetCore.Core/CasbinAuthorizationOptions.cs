@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Claims;
 using Casbin;
+using Casbin.AspNetCore.Authorization.Transformers;
 using Casbin.Model;
 
 namespace Casbin.AspNetCore.Authorization
@@ -11,7 +12,7 @@ namespace Casbin.AspNetCore.Authorization
         public string? DefaultPolicyPath { get; set; }
         public Func<IServiceProvider, IModel?, Enforcer>? DefaultEnforcerFactory { get; set; }
         public string? DefaultAuthenticationSchemes { get; set; }
-        public IRequestTransformer? DefaultRequestTransformer { get; set; }
+        public Type? DefaultRequestTransformerType { get; set; } = typeof(BasicRequestTransformer);
         public string PreferSubClaimType { get; set; } = ClaimTypes.NameIdentifier;
         public bool AllowAnyone { get; set; } = false;
     }

@@ -17,14 +17,14 @@ namespace Casbin.AspNetCore.Tests
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly ICasbinAuthorizationPolicyProvider _casbinPolicyCreator;
-        private readonly ICasbinAuthorizationContextFactory<RequestValues<string, string, string, string, string>> _casbinAuthorizationContextFactory;
+        private readonly ICasbinAuthorizationContextFactory<StringRequestValues> _casbinAuthorizationContextFactory;
         private const string DefaultScheme = "context.User";
 
         public CasbinEvaluatorTest(TestServerFixture testServerFixture)
         {
             _serviceProvider = testServerFixture.TestServer.Services;
             _casbinPolicyCreator = _serviceProvider.GetRequiredService<ICasbinAuthorizationPolicyProvider>();
-            _casbinAuthorizationContextFactory = _serviceProvider.GetRequiredService<ICasbinAuthorizationContextFactory<RequestValues<string, string, string, string, string>>>();
+            _casbinAuthorizationContextFactory = _serviceProvider.GetRequiredService<ICasbinAuthorizationContextFactory<StringRequestValues>>();
         }
 
         public static IEnumerable<object[]> BasicTestData = new[]
