@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Casbin.Model;
 
 namespace Casbin.AspNetCore.Authorization.Transformers
 {
@@ -11,53 +12,10 @@ namespace Casbin.AspNetCore.Authorization.Transformers
         public virtual string? Issuer { get; set; }
         public virtual string PreferSubClaimType { get; set; } = string.Empty;
 
-        public virtual ValueTask<IEnumerable<object>> TransformAsync(ICasbinAuthorizationContext context, ICasbinAuthorizationData data)
+        public virtual ValueTask<TRequest> TransformAsync<TRequest>(ICasbinAuthorizationContext<TRequest> context, ICasbinAuthorizationData<TRequest> data)
+            where TRequest : IRequestValues
         {
-            if (data.ValueCount is 0)
-            {
-                throw new ArgumentException("Value count is invalid.");
-            }
-
-            object[]? requestValues = new object[data.ValueCount];
-            int requestValuesLength = requestValues.Length;
-
-            if (requestValuesLength > 0)
-            {
-                requestValues[0] = data.Value1;
-            }
-            if (requestValuesLength > 1)
-            {
-                requestValues[1] = data.Value2;
-            }
-            if (requestValuesLength > 2)
-            {
-                requestValues[2] = data.Value3;
-            }
-            if (requestValuesLength > 3)
-            {
-                requestValues[3] = data.Value4;
-            }
-            if (requestValuesLength > 4)
-            {
-                requestValues[4] = data.Value5;
-            }
-            if (requestValuesLength <= 5)
-            {
-                return new ValueTask<IEnumerable<object>>(requestValues);
-            }
-
-            // Add the custom values
-            if (data.CustomValues is null)
-            {
-                throw new ArgumentException("Value count is invalid.");
-            }
-
-            string[]? customValues = data.CustomValues;
-            for (int index = 0; index < customValues.Length; index++)
-            {
-                requestValues[4 + index] = customValues[index];
-            }
-            return new ValueTask<IEnumerable<object>>(requestValues);
+            return new ValueTask<TRequest>(data.Values);
         }
     }
 }

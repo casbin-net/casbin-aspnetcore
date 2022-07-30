@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Casbin.AspNetCore.Authorization.Policy;
+using Casbin.Model;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Policy;
@@ -16,7 +16,8 @@ namespace Casbin.AspNetCore.Authorization
             _authorizationService = authorizationService;
         }
 
-        public virtual async Task<PolicyAuthorizationResult> AuthorizeAsync(ICasbinAuthorizationContext casbinContext, AuthorizationPolicy policy, AuthenticateResult? authenticationResult = null)
+        public virtual async Task<PolicyAuthorizationResult> AuthorizeAsync<TRequest>(ICasbinAuthorizationContext<TRequest> casbinContext, AuthorizationPolicy policy, AuthenticateResult? authenticationResult = null)
+            where TRequest : IRequestValues
         {
             if (policy is null)
             {

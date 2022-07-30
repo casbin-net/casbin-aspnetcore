@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Casbin.Model;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Policy;
@@ -9,7 +10,7 @@ using Microsoft.Extensions.Options;
 
 namespace Casbin.AspNetCore.Authorization
 {
-    public class CasbinAuthorizationMiddleware
+    public class CasbinAuthorizationMiddleware<TRequest> where TRequest : IRequestValues
     {
         private const string s_casbinAuthorizationMiddlewareInvokedWithEndpointKey = "__CasbinAuthorizationMiddlewareWithEndpointInvoked";
         private static readonly object s_casbinAuthorizationMiddlewareWithEndpointInvokedValue = new();
@@ -39,7 +40,7 @@ namespace Casbin.AspNetCore.Authorization
             }
 
             // IMPORTANT: Changes to authorization logic should be mirrored in MVC's AuthorizeFilter
-            var authorizeData = endpoint?.Metadata.GetOrderedMetadata<ICasbinAuthorizationData>();
+            var authorizeData = endpoint?.Metadata.GetOrderedMetadata<ICasbinAuthorizationData<TRequest>>();
 
             if (authorizeData is null || authorizeData.Count == 0)
             {
@@ -65,7 +66,7 @@ namespace Casbin.AspNetCore.Authorization
                 return;
             }
 
-            var casbinAuthorizationContextFactory = context.RequestServices.GetRequiredService<ICasbinAuthorizationContextFactory>();
+            var casbinAuthorizationContextFactory = context.RequestServices.GetRequiredService<ICasbinAuthorizationContextFactory<TRequest>>();
             var casbinAuthorizationContext = casbinAuthorizationContextFactory.CreateContext(authorizeData, context);
 
             var casbinEvaluator = context.RequestServices.GetRequiredService<ICasbinEvaluator>();

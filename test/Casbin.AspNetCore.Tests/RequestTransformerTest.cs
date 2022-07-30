@@ -6,6 +6,7 @@ using Casbin.AspNetCore.Authorization;
 using Casbin.AspNetCore.Authorization.Transformers;
 using Casbin.AspNetCore.Tests.Extensions;
 using Casbin.AspNetCore.Tests.Utilities;
+using Casbin.Model;
 using Xunit;
 
 namespace Casbin.AspNetCore.Tests
@@ -39,16 +40,16 @@ namespace Casbin.AspNetCore.Tests
             var httpContext = new TestUserBuilder()
                 .AddClaim(new Claim(claim, userName))
                 .Build().CreateDefaultHttpContext();
-            var casbinContext = new CasbinAuthorizationContext(
+            var casbinContext = new CasbinAuthorizationContext<RequestValues<string, string, string, string, string>>(
                 new CasbinAuthorizeAttribute(resource, action), httpContext);
 
             // Act
-            object[] requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
+            var values = await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First());
 
             // Assert
-            Assert.Equal(userNameExpected, requestValues[0]);
-            Assert.Equal(resourceExpected, requestValues[1]);
-            Assert.Equal(actionExpected, requestValues[2]);
+            Assert.Equal(userNameExpected, values.Value1);
+            Assert.Equal(resourceExpected, values.Value2);
+            Assert.Equal(actionExpected, values.Value3);
         }
 
         public static IEnumerable<object[]> BasicTransformerTestDataWithSpecClaim = new[]
@@ -80,16 +81,16 @@ namespace Casbin.AspNetCore.Tests
             var httpContext = new TestUserBuilder()
                 .AddClaim(new Claim(claim, userName))
                 .Build().CreateDefaultHttpContext();
-            var casbinContext = new CasbinAuthorizationContext(
+            var casbinContext = new CasbinAuthorizationContext<RequestValues<string, string, string, string, string>>(
                 new CasbinAuthorizeAttribute(resource, action), httpContext);
 
             // Act
-            object[] requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
+            var values = await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First());
 
             // Assert
-            Assert.Equal(userNameExpected, requestValues[0]);
-            Assert.Equal(resourceExpected, requestValues[1]);
-            Assert.Equal(actionExpected, requestValues[2]);
+            Assert.Equal(userNameExpected, values.Value1);
+            Assert.Equal(resourceExpected, values.Value2);
+            Assert.Equal(actionExpected, values.Value3);
         }
 
         public static IEnumerable<object[]> BasicTransformerTestDataWithSpecIssuer = new[]
@@ -122,16 +123,16 @@ namespace Casbin.AspNetCore.Tests
                 .AddClaim(new Claim(claim, userName,
                     ClaimValueTypes.String, issuer))
                 .Build().CreateDefaultHttpContext();
-            var casbinContext = new CasbinAuthorizationContext(
+            var casbinContext = new CasbinAuthorizationContext<RequestValues<string, string, string, string, string>>(
                 new CasbinAuthorizeAttribute(resource, action), httpContext);
 
             // Act
-            object[] requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
+            var values = await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First());
 
             // Assert
-            Assert.Equal(userNameExpected, requestValues[0]);
-            Assert.Equal(resourceExpected, requestValues[1]);
-            Assert.Equal(actionExpected, requestValues[2]);
+            Assert.Equal(userNameExpected, values.Value1);
+            Assert.Equal(resourceExpected, values.Value2);
+            Assert.Equal(actionExpected, values.Value3);
         }
 
         #endregion
@@ -163,16 +164,16 @@ namespace Casbin.AspNetCore.Tests
             var httpContext = new TestUserBuilder()
                 .AddClaim(new Claim(claim, userName))
                 .Build().CreateDefaultHttpContext();
-            var casbinContext = new CasbinAuthorizationContext(
+            var casbinContext = new CasbinAuthorizationContext<RequestValues<string, string, string, string, string>>(
                 new CasbinAuthorizeAttribute(resource, action), httpContext);
 
             // Act
-            object[] requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
+            var values = await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First());
 
             // Assert
-            Assert.Equal(userNameExpected, requestValues[0]);
-            Assert.Equal(resourceExpected, requestValues[1]);
-            Assert.Equal(actionExpected, requestValues[2]);
+            Assert.Equal(userNameExpected, values.Value1);
+            Assert.Equal(resourceExpected, values.Value2);
+            Assert.Equal(actionExpected, values.Value3);
         }
 
         public static IEnumerable<object[]> RbacTransformerTestDataWithSpecClaim = new[]
@@ -204,19 +205,19 @@ namespace Casbin.AspNetCore.Tests
             var httpContext = new TestUserBuilder()
                 .AddClaim(new Claim(claim, userName))
                 .Build().CreateDefaultHttpContext();
-            var casbinContext = new CasbinAuthorizationContext(
+            var casbinContext = new CasbinAuthorizationContext<RequestValues<string, string, string, string, string>>(
                 new CasbinAuthorizeAttribute(resource, action), httpContext);
 
             // Act
-            object[] requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
+            var values = await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First());
 
             // Assert
-            Assert.Equal(userNameExpected, requestValues[0]);
-            Assert.Equal(resourceExpected, requestValues[1]);
-            Assert.Equal(actionExpected, requestValues[2]);
+            Assert.Equal(userNameExpected, values.Value1);
+            Assert.Equal(resourceExpected, values.Value2);
+            Assert.Equal(actionExpected, values.Value3);
         }
 
-        
+
         public static IEnumerable<object[]> RbacTransformerTestDataWithSpecIssuer = new[]
         {
             new object[] { "LOCAL", ClaimTypes.Role,
@@ -247,16 +248,16 @@ namespace Casbin.AspNetCore.Tests
                 .AddClaim(new Claim(claim, userName,
                     ClaimValueTypes.String, issuer))
                 .Build().CreateDefaultHttpContext();
-            var casbinContext = new CasbinAuthorizationContext(
+            var casbinContext = new CasbinAuthorizationContext<RequestValues<string, string, string, string, string>>(
                 new CasbinAuthorizeAttribute(resource, action), httpContext);
 
             // Act
-            object[] requestValues = (await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First())).ToArray();
+            var values = await transformer.TransformAsync(casbinContext, casbinContext.AuthorizationData.First());
 
             // Assert
-            Assert.Equal(userNameExpected, requestValues[0]);
-            Assert.Equal(resourceExpected, requestValues[1]);
-            Assert.Equal(actionExpected, requestValues[2]);
+            Assert.Equal(userNameExpected, values.Value1);
+            Assert.Equal(resourceExpected, values.Value2);
+            Assert.Equal(actionExpected, values.Value3);
         }
 
         #endregion

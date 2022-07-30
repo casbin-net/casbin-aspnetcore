@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Casbin.Model;
 using Microsoft.AspNetCore.Http;
 
 namespace Casbin.AspNetCore.Authorization.Transformers
@@ -11,19 +12,22 @@ namespace Casbin.AspNetCore.Authorization.Transformers
     {
         public override string PreferSubClaimType { get; set; } = ClaimTypes.NameIdentifier;
 
-        public override ValueTask<IEnumerable<object>> TransformAsync(ICasbinAuthorizationContext context, ICasbinAuthorizationData data)
+        public override ValueTask<TRequest> TransformAsync<TRequest>(ICasbinAuthorizationContext<TRequest> context,
+            ICasbinAuthorizationData<TRequest> data)
         {
-            object[] requestValues = new object[data.ValueCount + 1];
-            requestValues[0] = SubTransform(context, data);
-
-            requestValues[1] = ObjTransform(context, data,
-                (_, d) => d.Value1);
-            requestValues[2] = ActTransform(context, data,
-                (_, d) => d.Value2);
-            return new ValueTask<IEnumerable<object>>(requestValues);
+            ref var values = ref data.Values;
+            if (values is not RequestValues<string, string, string, string, string> v)
+            {
+                return new ValueTask<TRequest>(data.Values);
+            }
+            values.TrySetValue(0, SubTransform(context, data));
+            values.TrySetValue(1, v.Value1);
+            values.TrySetValue(2, v.Value2);
+            return new ValueTask<TRequest>(data.Values);
         }
 
-        protected virtual string SubTransform(ICasbinAuthorizationContext context, ICasbinAuthorizationData data)
+        protected virtual string SubTransform<TRequest>(ICasbinAuthorizationContext<TRequest> context, ICasbinAuthorizationData<TRequest> data)
+            where TRequest : IRequestValues
         {
             HttpContext httpContext = context.HttpContext;
             Claim? claim;
@@ -37,12 +41,5 @@ namespace Casbin.AspNetCore.Authorization.Transformers
                 c => string.Equals(c.Issuer, Issuer));
             return claim is null ? string.Empty : claim.Value;
         }
-
-        protected virtual string ObjTransform(ICasbinAuthorizationContext context, ICasbinAuthorizationData data,
-            Func<ICasbinAuthorizationContext, ICasbinAuthorizationData, string> valueSelector)
-            => valueSelector(context, data);
-
-        protected virtual string ActTransform(ICasbinAuthorizationContext context, ICasbinAuthorizationData data, Func<ICasbinAuthorizationContext, ICasbinAuthorizationData, string> valueSelector)
-            => valueSelector(context, data);
     }
 }

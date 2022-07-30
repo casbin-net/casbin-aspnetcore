@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Casbin.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
-using Microsoft.JSInterop;
 
 namespace Casbin.AspNetCore.Authorization.Policy
 {
@@ -30,7 +30,8 @@ namespace Casbin.AspNetCore.Authorization.Policy
 
         private readonly AuthorizationPolicy _defaultPolicy;
 
-        public AuthorizationPolicy GetAuthorizationPolicy(IEnumerable<ICasbinAuthorizationData> authorizationData)
+        public AuthorizationPolicy GetAuthorizationPolicy<TRequest>(IEnumerable<ICasbinAuthorizationData<TRequest>> authorizationData)
+            where TRequest : IRequestValues
         {
             if (authorizationData is null)
             {
