@@ -7,7 +7,7 @@ namespace Casbin.AspNetCore.Authorization;
 /// Specifies that the class or method that this attribute is applied to requires the specified authorization.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-public class CasbinAuthorizeAttribute : Attribute, ICasbinAuthorizationData<RequestValues<string, string, string, string, string>>
+public class CasbinAuthorizeAttribute : CasbinAuthorizeBaseAttribute, ICasbinAuthorizationData<RequestValues<string, string, string, string, string>>
 {
     private RequestValues<string, string, string, string, string> _values;
     public CasbinAuthorizeAttribute()
@@ -41,8 +41,4 @@ public class CasbinAuthorizeAttribute : Attribute, ICasbinAuthorizationData<Requ
     }
 
     public ref RequestValues<string, string, string, string, string> Values => ref _values;
-    public string? Issuer { get; set; }
-    public string? PreferSubClaimType { get; set; }
-    public Type? RequestTransformerType { get; set; }
-    public string? AuthenticationSchemes { get; set; }
 }

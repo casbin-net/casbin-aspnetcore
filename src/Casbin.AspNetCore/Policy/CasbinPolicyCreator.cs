@@ -66,7 +66,7 @@ namespace Casbin.AspNetCore.Authorization.Policy
                 return;
             }
 
-            foreach (var authType in authTypesSplit)
+            foreach (string authType in authTypesSplit)
             {
                 if (string.IsNullOrWhiteSpace(authType) is false)
                 {

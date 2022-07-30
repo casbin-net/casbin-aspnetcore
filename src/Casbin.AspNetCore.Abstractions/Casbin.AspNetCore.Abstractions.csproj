@@ -17,6 +17,7 @@
     <IsPackable>true</IsPackable>
     <PackageTags>aspnetcore;authorization;security</PackageTags>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <RootNamespace>Casbin.AspNetCore.Authorization</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
