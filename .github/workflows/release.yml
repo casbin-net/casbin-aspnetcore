@@ -23,15 +23,15 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Setup .NET Core 3.1.x SDK
+    - name: Setup .NET SDK
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.x
-
-    - name: Setup .NET 5.0.x SDK
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
+          dotnet-version: |
+              3.1.x
+              5.0.x
+              6.0.x
+              7.0.x
+          include-prerelease: true
 
     - name: Check .NET info
       run: dotnet --info
@@ -103,21 +103,21 @@ jobs:
     - name: Check tags
       run: git tag -l -n
 
-    - name: Setup .NET Core 3.1.x SDK
+    - name: Setup .NET SDK
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.x
-
-    - name: Setup .NET 5.0.x SDK
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
+          dotnet-version: |
+              3.1.x
+              5.0.x
+              6.0.x
+              7.0.x
+          include-prerelease: true
 
     - name: Check .NET info
       run: dotnet --info
 
     - name: Install dependencies
-      run: nuget restore
+      run: dotnet restore
 
     - name: Build solution
       run: dotnet build -c Release --no-restore

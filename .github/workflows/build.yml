@@ -22,28 +22,28 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Setup .NET Core 3.1.x SDK
+    - name: Setup .NET SDK
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.x
-
-    - name: Setup .NET 5.0.x SDK
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
+          dotnet-version: |
+              3.1.x
+              5.0.x
+              6.0.x
+              7.0.x
+          include-prerelease: true
 
     - name: Check .NET info
       run: dotnet --info
 
     - name: Install dependencies
-      run: nuget restore
+      run: dotnet restore
 
     - name: Build solution
       run: dotnet build -c Release --no-restore
 
     - name: Test solution
-      run: dotnet test -c Release --no-build --no-restore --verbosity normal -r test-results --collect:"XPlat Code Coverage" `
-           -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=json,cobertura,lcov,teamcity,opencover
+      run: dotnet test -c Release --no-build --no-restore --results-directory test-results --verbosity normal --collect:"XPlat Code Coverage" `
+          -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=json,cobertura,lcov,teamcity,opencover
 
     - name: Upload coverage
       if: github.repository_owner == 'casbin-net' && github.event_name == 'push'
@@ -82,21 +82,21 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Setup .NET 3.1.x SDK
+    - name: Setup .NET SDK
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.x
-
-    - name: Setup .NET 5.0.x SDK
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
+          dotnet-version: |
+              3.1.x
+              5.0.x
+              6.0.x
+              7.0.x
+          include-prerelease: true
 
     - name: Check .NET info
       run: dotnet --info
 
     - name: Install dependencies
-      run: nuget restore
+      run: dotnet restore
 
     - name: Build solution
       run: dotnet build -c Release --no-restore
@@ -141,21 +141,21 @@ jobs:
     - name: Check tags
       run: git tag -l -n
 
-    - name: Setup .NET Core 3.1.x SDK
+    - name: Setup .NET SDK
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.x
-
-    - name: Setup .NET 5.0.x SDK
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
+          dotnet-version: |
+              3.1.x
+              5.0.x
+              6.0.x
+              7.0.x
+          include-prerelease: true
 
     - name: Check .NET info
       run: dotnet --info
 
     - name: Install dependencies
-      run: nuget restore
+      run: dotnet restore
 
     - name: Build solution
       run: dotnet build -c Release --no-restore
