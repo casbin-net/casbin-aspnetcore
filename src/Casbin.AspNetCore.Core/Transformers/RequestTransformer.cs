@@ -7,15 +7,16 @@ using Casbin.Model;
 
 namespace Casbin.AspNetCore.Authorization.Transformers
 {
-    public class RequestTransformer : IRequestTransformer
+    public class RequestTransformer : IRequestTransformer<StringRequestValues>
     {
         public virtual string? Issuer { get; set; }
         public virtual string PreferSubClaimType { get; set; } = string.Empty;
 
-        public virtual ValueTask<TRequest> TransformAsync<TRequest>(ICasbinAuthorizationContext<TRequest> context, ICasbinAuthorizationData<TRequest> data)
-            where TRequest : IRequestValues
+        public virtual ValueTask<StringRequestValues> TransformAsync(
+            ICasbinAuthorizationContext<StringRequestValues> context,
+            ICasbinAuthorizationData<StringRequestValues> data)
         {
-            return new ValueTask<TRequest>(data.Values);
+            return new ValueTask<StringRequestValues>(data.Values);
         }
     }
 }

@@ -47,7 +47,7 @@ namespace Casbin.AspNetCore.Authorization
             ServiceLifetime defaultEnforcerProviderLifeTime = ServiceLifetime.Scoped,
             ServiceLifetime defaultModelProviderLifeTime = ServiceLifetime.Scoped)
         {
-            services.AddCasbinAuthorizationCore<RequestValues<string, string, string, string, string>>(configureOptions, defaultEnforcerProviderLifeTime, defaultModelProviderLifeTime);
+            services.AddCasbinAuthorizationCore<StringRequestValues>(configureOptions, defaultEnforcerProviderLifeTime, defaultModelProviderLifeTime);
             return services;
         }
 
@@ -67,15 +67,18 @@ namespace Casbin.AspNetCore.Authorization
             where TRequest : IRequestValues
         {
             services.AddCasbin(configureOptions, defaultEnforcerProviderLifeTime, defaultModelProviderLifeTime);
-            services.TryAdd(ServiceDescriptor.Singleton(typeof(ICasbinAuthorizationContextFactory<>), typeof(DefaultCasbinAuthorizationContextFactory<>)));
+            services.TryAdd(ServiceDescriptor.Singleton(
+                typeof(ICasbinAuthorizationContextFactory<>),
+                typeof(DefaultCasbinAuthorizationContextFactory<>)));
             services.TryAddScoped<IEnforceService, DefaultEnforcerService>();
-            services.TryAddSingleton<IRequestTransformersCache, RequestTransformersCache>();
-
+            services.TryAdd(ServiceDescriptor.Singleton(
+                typeof(IRequestTransformersCache<>),
+                typeof(RequestTransformersCache<>)));
             // Can not change to TryAdd, because there interface may need more than one implement.
             services.AddScoped<IAuthorizationHandler, CasbinAuthorizationHandler<TRequest>>();
-            services.AddSingleton<IRequestTransformer, BasicRequestTransformer>();
-            services.AddSingleton<IRequestTransformer, RbacRequestTransformer>();
-            services.AddSingleton<IRequestTransformer, KeyMatchRequestTransformer>();
+            services.AddSingleton<IRequestTransformer<StringRequestValues>, BasicRequestTransformer>();
+            services.AddSingleton<IRequestTransformer<StringRequestValues>, RbacRequestTransformer>();
+            services.AddSingleton<IRequestTransformer<StringRequestValues>, KeyMatchRequestTransformer>();
 
             services.AddAuthorizationCore();
             return services;

@@ -40,7 +40,7 @@ namespace Casbin.AspNetCore.Tests
             var httpContext = new TestUserBuilder()
                 .AddClaim(new Claim(claim, userName))
                 .Build().CreateDefaultHttpContext();
-            var casbinContext = new CasbinAuthorizationContext<RequestValues<string, string, string, string, string>>(
+            var casbinContext = new CasbinAuthorizationContext<StringRequestValues>(
                 new CasbinAuthorizeAttribute(resource, action), httpContext);
 
             // Act
@@ -81,7 +81,7 @@ namespace Casbin.AspNetCore.Tests
             var httpContext = new TestUserBuilder()
                 .AddClaim(new Claim(claim, userName))
                 .Build().CreateDefaultHttpContext();
-            var casbinContext = new CasbinAuthorizationContext<RequestValues<string, string, string, string, string>>(
+            var casbinContext = new CasbinAuthorizationContext<StringRequestValues>(
                 new CasbinAuthorizeAttribute(resource, action), httpContext);
 
             // Act
@@ -123,7 +123,7 @@ namespace Casbin.AspNetCore.Tests
                 .AddClaim(new Claim(claim, userName,
                     ClaimValueTypes.String, issuer))
                 .Build().CreateDefaultHttpContext();
-            var casbinContext = new CasbinAuthorizationContext<RequestValues<string, string, string, string, string>>(
+            var casbinContext = new CasbinAuthorizationContext<StringRequestValues>(
                 new CasbinAuthorizeAttribute(resource, action), httpContext);
 
             // Act
@@ -164,7 +164,7 @@ namespace Casbin.AspNetCore.Tests
             var httpContext = new TestUserBuilder()
                 .AddClaim(new Claim(claim, userName))
                 .Build().CreateDefaultHttpContext();
-            var casbinContext = new CasbinAuthorizationContext<RequestValues<string, string, string, string, string>>(
+            var casbinContext = new CasbinAuthorizationContext<StringRequestValues>(
                 new CasbinAuthorizeAttribute(resource, action), httpContext);
 
             // Act
@@ -205,7 +205,7 @@ namespace Casbin.AspNetCore.Tests
             var httpContext = new TestUserBuilder()
                 .AddClaim(new Claim(claim, userName))
                 .Build().CreateDefaultHttpContext();
-            var casbinContext = new CasbinAuthorizationContext<RequestValues<string, string, string, string, string>>(
+            var casbinContext = new CasbinAuthorizationContext<StringRequestValues>(
                 new CasbinAuthorizeAttribute(resource, action), httpContext);
 
             // Act
@@ -248,7 +248,7 @@ namespace Casbin.AspNetCore.Tests
                 .AddClaim(new Claim(claim, userName,
                     ClaimValueTypes.String, issuer))
                 .Build().CreateDefaultHttpContext();
-            var casbinContext = new CasbinAuthorizationContext<RequestValues<string, string, string, string, string>>(
+            var casbinContext = new CasbinAuthorizationContext<StringRequestValues>(
                 new CasbinAuthorizeAttribute(resource, action), httpContext);
 
             // Act
