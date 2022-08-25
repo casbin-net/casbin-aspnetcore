@@ -67,12 +67,12 @@ jobs:
             $LastExitCode = 0;
         }
 
-    - name: Upload test results artefacts
+    - name: Upload test results artifacts
       if: github.repository_owner == 'casbin-net' && github.event_name == 'push'
-      uses: actions/upload-artifact@v1.0.0
+      uses: actions/upload-artifact@v3
       with:
         name: "drop-ci-test-results"
-        path: './test-results'
+        path: './test/Casbin.AspNetCore.Performance/BenchmarkDotNet.Artifacts'
 
   benchmark:
     runs-on: windows-latest
