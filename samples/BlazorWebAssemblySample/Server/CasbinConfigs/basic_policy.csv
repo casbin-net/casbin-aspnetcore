@@ -1,0 +1,5 @@
+p, alice@example.com, BasicTest, GET
+
+p, alice@example.com, /Casbin/AttributeTest, GET
+
+#p, alice@example.com, /home/privacy, GET
