@@ -12,7 +12,7 @@ namespace Casbin.AspNetCore.Authorization.Transformers
         {
             ref var values = ref data.Values;
             values.TrySetValue(0, SubTransform(context, data));
-            values.TrySetValue(1,  context.HttpContext.Request.Path);
+            values.TrySetValue(1, context.HttpContext.Request.Path.Value);
             values.TrySetValue(2, context.HttpContext.Request.Method);
             return new ValueTask<StringRequestValues>(data.Values);
         }

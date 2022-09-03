@@ -1,0 +1,29 @@
+﻿@page "/casbinAuthentication/{action}"
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using System.Net.Http;
+@inject HttpClient httpClient
+<RemoteAuthenticatorView Action="@Action" />
+
+
+<h1>@Result</h1>
+
+@code {
+    [Parameter] public string? Action { get; set; }
+    public string Result { get; set; } = "An error has occured.";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Result = await httpClient.GetStringAsync($"Casbin/{Action}");
+        }
+        catch(UnauthorizedAccessException ex)
+        {
+            Result = "You don't have the access to this resource.";
+        }
+        catch(Exception ex)
+        {
+            Result += "\n" + ex.StackTrace;
+        }
+    }
+}
