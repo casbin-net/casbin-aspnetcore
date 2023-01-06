@@ -55,7 +55,7 @@ namespace Casbin.AspNetCore.Authorization
             if (adapter != null)
             {
                 // _enforcer ??= SyncedEnforcer.Create(model, adapter, true);
-                _enforcer ??= new Enforcer(_modelProvider.GetModel(), adapter);
+                _enforcer ??= new Enforcer(model, adapter);
                 return _enforcer;
             }
 
@@ -68,12 +68,12 @@ namespace Casbin.AspNetCore.Authorization
                 }
 
                 // _enforcer ??= SyncedEnforcer.Create(model, new FileAdapter(policyPath), true);
-                _enforcer ??= new Enforcer(_modelProvider.GetModel(), new FileAdapter(policyPath));
+                _enforcer ??= new Enforcer(model, new FileAdapter(policyPath));
                 return _enforcer;
             }
 
             // _enforcer ??= SyncedEnforcer.Create(model);
-            _enforcer ??= new Enforcer(_modelProvider.GetModel());
+            _enforcer ??= new Enforcer(model);
             return _enforcer;
         }
     }
