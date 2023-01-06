@@ -40,7 +40,8 @@ namespace Casbin.AspNetCore.Authorization
             IModel? model = _modelProvider.GetModel();
             if (model is null)
             {
-                throw new ArgumentException($"GetModel method of {nameof(ICasbinModelProvider)} can not return null when {nameof(_options.Value.DefaultEnforcerFactory)} option is empty");
+                throw new ArgumentException(
+                    $"GetModel method of {nameof(ICasbinModelProvider)} can not return null when {nameof(_options.Value.DefaultEnforcerFactory)} option is empty");
             }
 
             if (_options.Value.DefaultEnforcerFactory is not null)
@@ -53,7 +54,8 @@ namespace Casbin.AspNetCore.Authorization
             IAdapter? adapter = _serviceProvider.GetService<IAdapter>();
             if (adapter != null)
             {
-                _enforcer ??= SyncedEnforcer.Create(model, adapter, true);
+                // _enforcer ??= SyncedEnforcer.Create(model, adapter, true);
+                _enforcer ??= new Enforcer(_modelProvider.GetModel(), adapter);
                 return _enforcer;
             }
 
@@ -64,11 +66,14 @@ namespace Casbin.AspNetCore.Authorization
                 {
                     throw new FileNotFoundException("Can not find the policy file path.", policyPath);
                 }
-                _enforcer ??= SyncedEnforcer.Create(model, new FileAdapter(policyPath), true);
+
+                // _enforcer ??= SyncedEnforcer.Create(model, new FileAdapter(policyPath), true);
+                _enforcer ??= new Enforcer(_modelProvider.GetModel(), new FileAdapter(policyPath));
                 return _enforcer;
             }
 
-            _enforcer ??= SyncedEnforcer.Create(model);
+            // _enforcer ??= SyncedEnforcer.Create(model);
+            _enforcer ??= new Enforcer(_modelProvider.GetModel());
             return _enforcer;
         }
     }
