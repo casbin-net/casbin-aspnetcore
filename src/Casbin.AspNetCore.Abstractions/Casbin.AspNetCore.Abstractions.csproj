@@ -23,7 +23,7 @@
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
-    <PackageReference Include="Casbin.NET" Version="2.0.0-preview.4-build.263.preview.aa73b71" />
+    <PackageReference Include="Casbin.NET" Version="2.0.0-preview.5" />
   </ItemGroup>
 
   <ItemGroup>

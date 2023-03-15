@@ -53,7 +53,7 @@ namespace Casbin.AspNetCore.Authorization
             IAdapter? adapter = _serviceProvider.GetService<IAdapter>();
             if (adapter != null)
             {
-                _enforcer ??= SyncedEnforcer.Create(model, adapter, true);
+                _enforcer ??= new Enforcer(model, adapter);
                 return _enforcer;
             }
 
@@ -64,11 +64,10 @@ namespace Casbin.AspNetCore.Authorization
                 {
                     throw new FileNotFoundException("Can not find the policy file path.", policyPath);
                 }
-                _enforcer ??= SyncedEnforcer.Create(model, new FileAdapter(policyPath), true);
+                _enforcer ??= new Enforcer(model, new FileAdapter(policyPath));
                 return _enforcer;
             }
-
-            _enforcer ??= SyncedEnforcer.Create(model);
+            _enforcer ??= new Enforcer(model);
             return _enforcer;
         }
     }
