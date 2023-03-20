@@ -2,7 +2,7 @@
 p, alice@example.com, BasicTest, Get
 
 # Policy below will only match if using the CustomRequestTransformer
-p, alice@example.com, /attribtest, GET
+p, alice@example.com, /AttributeTest, GET
 
 # Policy below will only match if using the CustomRequestTransformer
 #p, alice@example.com, /home/privacy, GET

@@ -16,13 +16,13 @@ namespace Casbin.AspNetCore.Authorization.Transformers
             ICasbinAuthorizationContext<StringRequestValues> context,
             ICasbinAuthorizationData<StringRequestValues> data)
         {
-            ref var values = ref data.Values;
+            var values = data.Values;
             string? value1 = values.Value1;
             string? value2 = values.Value2;
             values.TrySetValue(0, SubTransform(context, data));
             values.TrySetValue(1, value1);
             values.TrySetValue(2, value2);
-            return new ValueTask<StringRequestValues>(data.Values);
+            return new ValueTask<StringRequestValues>(values);
         }
 
         protected virtual string SubTransform<TRequest>(ICasbinAuthorizationContext<TRequest> context, ICasbinAuthorizationData<TRequest> data)

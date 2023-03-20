@@ -10,11 +10,11 @@ namespace Casbin.AspNetCore.Authorization.Transformers
             ICasbinAuthorizationContext<StringRequestValues> context,
             ICasbinAuthorizationData<StringRequestValues> data)
         {
-            ref var values = ref data.Values;
+            var values = data.Values;
             values.TrySetValue(0, SubTransform(context, data));
             values.TrySetValue(1, context.HttpContext.Request.Path.Value);
             values.TrySetValue(2, context.HttpContext.Request.Method);
-            return new ValueTask<StringRequestValues>(data.Values);
+            return new ValueTask<StringRequestValues>(values);
         }
     }
 }
