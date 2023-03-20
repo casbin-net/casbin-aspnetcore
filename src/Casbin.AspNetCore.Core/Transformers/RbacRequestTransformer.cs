@@ -14,7 +14,7 @@ namespace Casbin.AspNetCore.Authorization.Transformers
             ICasbinAuthorizationContext<StringRequestValues> context,
             ICasbinAuthorizationData<StringRequestValues> data)
         {
-            ref var values = ref data.Values;
+            var values = data.Values;
             string? value1 = values.Value1;
             string? value2 = values.Value2;
             string? value3 = values.Value3;
@@ -22,7 +22,7 @@ namespace Casbin.AspNetCore.Authorization.Transformers
             values.TrySetValue(1, value1);
             values.TrySetValue(2, value2);
             values.TrySetValue(3, value3);
-            return new ValueTask<StringRequestValues>(data.Values);
+            return new ValueTask<StringRequestValues>(values);
         }
     }
 }
