@@ -64,14 +64,38 @@ public IActionResult Index()
 }
 ```
 
-## Usages
-Head over to the [usages](https://github.com/casbin-net/casbin-aspnetcore/wiki/Usages) on the wiki to know all the features.
-
 ## How It Works
-Head over to the [how it works](https://github.com/casbin-net/casbin-aspnetcore/wiki/How-it-works) on the wiki for user guidance on how it works.
+
+Here is a sequence chart that can well describe the process of this middleware. In the beginning, It looks like the process of official authorization middleware. It changes in the last half part.
+
+![Sequence Chart of Middleware](https://raw.githubusercontent.com/casbin-net/casbin-aspnetcore/master/docs/assets/casbin-aspnetcore-sequence-chart.png)
 
 ## Samples
 Sample applications using `Casbin.AspNetCore` can be found at [sample directory](https://github.com/casbin-net/casbin-aspnetcore/tree/master/samples).
+
+## Migrate form v0.x to v1.x
+
+1. Check the interfaces change:
+- IEnforcerProvider
+```csharp
+public interface IEnforcerProvider
+{
+    // Before
+    public Enforcer? GetEnforcer();
+    // Now
+    public IEnforcer? GetEnforcer();
+}
+```
+- ICasbinModelProvider
+```csharp
+public interface ICasbinModelProvider
+{
+    // Before
+    public Model? GetModel();
+    // Now
+    public IModel? GetModel();
+}
+```
 
 ## Getting Help
 - [Casbin.NET](https://github.com/casbin/Casbin.NET)
