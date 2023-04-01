@@ -35,7 +35,6 @@ namespace WebApplicationSample.Controllers
             return View();
         }
 
-        [CasbinAuthorize]
         public IActionResult Privacy()
         {
             return View();
