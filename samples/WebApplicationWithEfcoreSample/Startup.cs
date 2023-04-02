@@ -35,11 +35,8 @@ namespace WebApplicationSample
             {
                 options.PreferSubClaimType = ClaimTypes.Name;
                 options.DefaultModelPath = Path.Combine("CasbinConfigs", "basic_model.conf");
-                //options.DefaultPolicyPath = Path.Combine("CasbinConfigs", "basic_policy.csv");
-
                 options.DefaultEnforcerFactory = (p, m) =>
                     new Enforcer(m, new EFCoreAdapter<string>(p.GetRequiredService<CasbinDbContext<string>>()));
-                options.DefaultRequestTransformerType = typeof(BasicRequestTransformer);
             });
             services.AddDefaultIdentity<IdentityUser>(options =>
                 {
