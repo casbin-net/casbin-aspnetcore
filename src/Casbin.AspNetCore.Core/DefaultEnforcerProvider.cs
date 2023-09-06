@@ -3,7 +3,7 @@ using System.IO;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Casbin.Model;
-using Casbin.Adapter.File;
+using Casbin.Persist.Adapter.File;
 using Casbin.Persist;
 
 namespace Casbin.AspNetCore.Authorization

@@ -28,7 +28,7 @@ namespace BlazorWebAssemblySample.Server.Controllers
         }
 
         [HttpGet("BasicTest")]
-        [CasbinAuthorize(nameof(BasicTest), nameof(System.Net.Http.HttpMethod.Get))]
+        [CasbinAuthorize(nameof(BasicTest), "GET")]
         public string BasicTest()
         {
             return "You have passed the authentication test.";
