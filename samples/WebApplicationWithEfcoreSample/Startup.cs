@@ -10,7 +10,7 @@ using Microsoft.Extensions.Hosting;
 using System.IO;
 using System.Security.Claims;
 using Casbin.AspNetCore.Authorization.Transformers;
-using Casbin.Adapter.EFCore;
+using Casbin.Persist.Adapter.EFCore;
 using Casbin;
 
 namespace WebApplicationSample
