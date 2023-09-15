@@ -3,7 +3,7 @@
 [![Actions Status](https://github.com/casbin-net/casbin-aspnetcore/workflows/Build/badge.svg)](https://github.com/casbin-net/casbin-aspnetcore/actions)
 [![Coverage Status](https://coveralls.io/repos/github/casbin-net/casbin-aspnetcore/badge.svg?branch=master)](https://coveralls.io/github/casbin-net/casbin-aspnetcore?branch=master)
 [![License](https://img.shields.io/github/license/casbin-net/casbin-aspnetcore)](https://github.com/casbin-net/casbin-aspnetcore/blob/master/LICENSE)
-[![Build Version](https://img.shields.io/casbin-net.myget/casbin-net/v/Casbin.AspNetCore?label=Casbin.AspNetCore)](https://www.myget.org/feed/casbin-net/package/nuget/Casbin.AspNetCore)
+[![Nuget](https://img.shields.io/nuget/v/Casbin.AspNetCore?label=Casbin.AspNetCore)](https://www.nuget.org/packages/Casbin.AspNetCore)
 
 Casbin.AspNetCore is a [Casbin.NET](https://github.com/casbin/Casbin.NET) integration and extension for [ASP.NET Core](https://asp.net).
 
