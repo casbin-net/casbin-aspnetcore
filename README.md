@@ -12,7 +12,7 @@ Casbin.AspNetCore is a [Casbin.NET](https://github.com/casbin/Casbin.NET) integr
 This project is on developing, You can install the build version to try it.
 
 ```csharp
-dotnet add package Casbin.AspNetCore --version <build package version> --source https://www.myget.org/F/casbin-net/api/v3/index.json
+dotnet add package Casbin.AspNetCore --version <build package version>
 ```
 
 Or you create a `NuGet.config` file on you solution directory like this.
@@ -21,7 +21,6 @@ Or you create a `NuGet.config` file on you solution directory like this.
 <configuration>
   <packageSources>
     <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
-    <add key="myget.org" value="https://www.myget.org/F/casbin-net/api/v3/index.json" />
   </packageSources>
 </configuration>
 ```
