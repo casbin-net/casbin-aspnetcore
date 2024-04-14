@@ -22,20 +22,19 @@ namespace WebApplicationSample.Controllers
             return View();
         }
 
-        [HttpGet("attribtest")]
-        [CasbinAuthorize("/attribtest", "GET")]
-        public IActionResult AttribRouteTest(string tenantId)
+        [HttpGet("AttributeTest")]
+        [CasbinAuthorize(RequestTransformerType = typeof(KeyMatchRequestTransformer))]
+        public IActionResult AttributeTest(string tenantId)
         {
             return View();
         }
 
-        [CasbinAuthorize(nameof(BasicTest), nameof(HttpMethod.Get))]
+        [CasbinAuthorize(nameof(BasicTest), nameof(HttpMethod.Get), RequestTransformerType = typeof(BasicRequestTransformer))]
         public IActionResult BasicTest()
         {
             return View();
         }
 
-        [CasbinAuthorize]
         public IActionResult Privacy()
         {
             return View();

@@ -1,4 +1,4 @@
-# Policy below will only match using the BasicRequestTransformer
+# Policy below will only match if using the BasicRequestTransformer
 p, alice@example.com, BasicTest, Get
 
 # Policy below will only match if using the KeyMatchRequestTransformer
