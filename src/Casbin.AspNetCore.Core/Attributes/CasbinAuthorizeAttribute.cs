@@ -75,5 +75,15 @@ public class CasbinAuthorizeAttribute : CasbinAuthorizeBaseAttribute, ICasbinAut
         _values = new StringRequestValues(value1, value2, value3, value4, value5, value6, value7, value8, value9, value10, value11, value12);
     }
 
+    public CasbinAuthorizeAttribute(string value1, string value2, string value3, string value4, string value5, string value6, string value7, string value8, string value9, string value10, string value11, string value12, string value13) : this(value1, value2, value3, value4, value5, value6, value7, value8, value9, value10, value11, value12)
+    {
+        _values = new StringRequestValues(value1, value2, value3, value4, value5, value6, value7, value8, value9, value10, value11, value12, value13);
+    }
+
+    public CasbinAuthorizeAttribute(string value1, string value2, string value3, string value4, string value5, string value6, string value7, string value8, string value9, string value10, string value11, string value12, string value13, string value14) : this(value1, value2, value3, value4, value5, value6, value7, value8, value9, value10, value11, value12, value13)
+    {
+        _values = new StringRequestValues(value1, value2, value3, value4, value5, value6, value7, value8, value9, value10, value11, value12, value13, value14);
+    }
+
     public ref StringRequestValues Values => ref _values;
 }
